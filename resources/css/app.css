@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-icc-primary: #FF1A1A;
+    --color-icc-primary-dark: #CC1515;
+    --color-icc-primary-light: #FF4444;
+    --color-icc-gold: #f59e0b;
+    --color-icc-gold-dark: #d97706;
+    --color-icc-gold-light: #fbbf24;
+    --color-icc-dark: #0A0A0A;
+    --color-icc-gray: #64748b;
+    --color-icc-red: #FF1A1A;
+    --color-icc-red-dark: #CC1515;
+    --color-icc-red-light: #FF4444;
+    --color-icc-menu: #0A0A0A;
+    --color-icc-menu-hover: #FF1A1A;
+    --color-icc-primary-pink: #FF1A1A;
+}
+
+/* Swiper Pagination */
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+    width: 10px;
+    height: 10px;
+    margin: 0 6px !important;
+    transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+    background: #f59e0b;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+.swiper-pagination {
+    bottom: 24px !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .swiper-pagination {
+        bottom: 16px !important;
+    }
+    .swiper-pagination-bullet {
+        width: 8px;
+        height: 8px;
+        margin: 0 4px !important;
+    }
+}
