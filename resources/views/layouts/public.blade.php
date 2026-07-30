@@ -76,6 +76,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <style>[x-cloak]{display:none!important}</style>
 </head>
 <body class="font-sans antialiased text-icc-dark bg-gray-50 relative min-h-screen">
 
@@ -106,8 +107,37 @@
 
     <x-public.footer />
 
+    @if ($settings->popup_aktif && $settings->popup_gambar)
+    <div id="icc-popup" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" style="display:none">
+        <div class="relative max-w-sm w-full bg-white rounded-2xl shadow-2xl overflow-hidden" style="animation:fade-in .3s ease-out">
+            <button onclick="document.getElementById('icc-popup').style.display='none'"
+                    class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <img src="{{ Storage::url($settings->popup_gambar) }}" alt="Flyer" class="w-full h-auto">
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var popup = document.getElementById('icc-popup');
+            if (popup) {
+                popup.style.display = '';
+                popup.addEventListener('click', function(e) {
+                    if (e.target === popup) popup.style.display = 'none';
+                });
+            }
+        });
+    </script>
+    @endif
+
     @livewireScripts
     @stack('scripts')
+
+<style>
+    @keyframes fade-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+</style>
 
 </body>
 </html>

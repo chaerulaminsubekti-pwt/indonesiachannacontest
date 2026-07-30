@@ -75,4 +75,9 @@ class Event extends Model
     {
         return $this->hasMany(EventFlyer::class);
     }
+
+    public function cps(): HasMany
+    {
+        return $this->hasMany(EventCp::class);
+    }
 }

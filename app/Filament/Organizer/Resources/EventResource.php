@@ -3,6 +3,7 @@
 namespace App\Filament\Organizer\Resources;
 
 use App\Filament\Organizer\Resources\EventResource\Pages;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventFlyersRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventGalleriesRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\TestimonialsRelationManager;
@@ -79,20 +80,14 @@ class EventResource extends Resource
                         TextInput::make('wilayah_kota')->maxLength(255),
                     ]),
                 Section::make('Data Peserta')
-                    ->description('Integrasi Google Sheets & CP Pendaftaran')
-                    ->columns(2)
+                    ->description('Link Google Sheets untuk data peserta')
+                    ->columns(1)
                     ->schema([
                         TextInput::make('google_sheet_url')
                             ->label('Link Google Sheets (Data Peserta)')
                             ->placeholder('https://docs.google.com/spreadsheets/d/...')
                             ->url()
                             ->helperText('Tempel link Google Sheets yang berisi kolom: No, Nama, Nama Ikan. Sheet harus bisa diakses publik.'),
-                        TextInput::make('no_wa_cp')
-                            ->label('CP Pendaftaran (WhatsApp)')
-                            ->placeholder('62812xxxxxxx')
-                            ->tel()
-                            ->maxLength(20)
-                            ->helperText('Nomor WhatsApp Contact Person untuk pendaftaran peserta. Gunakan format kode negara tanpa +/0, contoh: 628123456789'),
                     ]),
                 Section::make('Deskripsi')
                     ->description('Informasi tambahan tentang event')
@@ -149,6 +144,7 @@ class EventResource extends Resource
     {
         return [
             EventFlyersRelationManager::class,
+            EventCpsRelationManager::class,
             WinnersRelationManager::class,
             EventGalleriesRelationManager::class,
             TestimonialsRelationManager::class,

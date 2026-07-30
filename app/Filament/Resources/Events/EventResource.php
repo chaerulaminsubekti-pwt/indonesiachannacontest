@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Events;
 
 use App\Filament\Resources\Events\Pages\ManageEvents;
 use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRelationManager;
 use App\Filament\Resources\Events\RelationManagers\EventClassesRelationManager;
 use App\Filament\Resources\Events\RelationManagers\JudgesRelationManager;
 use App\Models\Event;
@@ -254,6 +255,7 @@ class EventResource extends Resource
     {
         return [
             EventClassesRelationManager::class,
+            EventCpsRelationManager::class,
             JudgesRelationManager::class,
         ];
     }

@@ -16,6 +16,7 @@ class SiteSetting extends Model
         'sambutan_ketua', 'foto_ketua', 'nama_ketua',
         'sambutan_pembina', 'foto_pembina', 'nama_pembina', 'jabatan_pembina',
         'updated_by',
+        'popup_aktif', 'popup_gambar',
     ];
 
     public function updater(): BelongsTo

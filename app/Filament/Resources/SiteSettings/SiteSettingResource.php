@@ -152,6 +152,24 @@ class SiteSettingResource extends Resource
                                 ]),
                             ]),
 
+                        Tab::make('Pop Up Flyer')
+                            ->icon('heroicon-o-window')
+                            ->schema([
+                                Section::make('Pop Up Flyer')->columns(1)->schema([
+                                    \Filament\Forms\Components\Toggle::make('popup_aktif')
+                                        ->label('Aktifkan Pop Up Flyer')
+                                        ->helperText('Jika diaktifkan, pop up flyer akan muncul saat pengunjung membuka website.')
+                                        ->default(false),
+                                    FileUpload::make('popup_gambar')
+                                        ->label('Gambar Flyer')
+                                        ->image()
+                                        ->directory('site/popup')
+                                        ->disk('public')
+                                        ->maxSize(5120)
+                                        ->helperText('Upload gambar flyer yang akan muncul sebagai pop up. Resolusi recommended: 600x800px'),
+                                ]),
+                            ]),
+
                         Tab::make('Footer & Notifikasi')
                             ->icon('heroicon-o-inbox-arrow-down')
                             ->schema([

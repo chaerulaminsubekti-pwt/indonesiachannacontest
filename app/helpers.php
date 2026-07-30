@@ -11,10 +11,12 @@ if (!function_exists('safe_html')) {
 
         $html = strip_tags($html, $allowed);
 
-        $html = preg_replace('/\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\')/i', '', $html);
+        $html = preg_replace('/<\?(?:php)?\s.*?\?>/is', '', $html);
 
-        $html = preg_replace('/href\s*=\s*"(?:javascript|data):[^"]*"/i', 'href="#"', $html);
-        $html = preg_replace("/href\s*=\s*'(?:javascript|data):[^']*'/i", "href='#'", $html);
+        $html = preg_replace('/\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+
+        $html = preg_replace('/href\s*=\s*"(?!(?:https?:\/\/|mailto:|tel:|\/|#))[^"]*"/i', 'href="#"', $html);
+        $html = preg_replace("/href\s*=\s*'(?!(?:https?:\/\/|mailto:|tel:|\/|#))[^']*'/i", "href='#'", $html);
 
         return $html;
     }
