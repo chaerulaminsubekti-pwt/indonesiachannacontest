@@ -10,6 +10,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -46,10 +47,10 @@ class SiteSettingResource extends Resource
                                         ->label('Logo Header')
                                         ->image()->directory('site')->maxSize(5120)
                                         ->disk('public'),
-                                        FileUpload::make('favicon')
-                                            ->label('Favicon')
-                                            ->image()->directory('site')->maxSize(5120)
-                                            ->disk('public'),
+                                    FileUpload::make('favicon')
+                                        ->label('Favicon')
+                                        ->image()->directory('site')->maxSize(5120)
+                                        ->disk('public'),
                                 ]),
                                 Section::make('Informasi Dasar')->columns(2)->schema([
                                     TextInput::make('nama_website')
@@ -156,7 +157,7 @@ class SiteSettingResource extends Resource
                             ->icon('heroicon-o-window')
                             ->schema([
                                 Section::make('Pop Up Flyer')->columns(1)->schema([
-                                    \Filament\Forms\Components\Toggle::make('popup_aktif')
+                                    Toggle::make('popup_aktif')
                                         ->label('Aktifkan Pop Up Flyer')
                                         ->helperText('Jika diaktifkan, pop up flyer akan muncul saat pengunjung membuka website.')
                                         ->default(false),

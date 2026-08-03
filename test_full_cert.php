@@ -1,16 +1,15 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-$app = require_once __DIR__ . '/bootstrap/app.php';
+$app = require_once __DIR__.'/bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-use App\Models\Winner;
-use App\Models\EventClass;
-use App\Models\WinnerPredikat;
-use App\Models\Event;
-use App\Models\SiteSetting;
 use App\Jobs\GenerateCertificateJob;
+use App\Models\Event;
+use App\Models\EventClass;
+use App\Models\Winner;
+use App\Models\WinnerPredikat;
 
 // Create a new test winner with full test
 $event = Event::first();
@@ -21,7 +20,7 @@ $newWinner = Winner::create([
     'event_id' => $event->id,
     'event_class_id' => $eventClass->id,
     'winner_predikat_id' => $predikat->id,
-    'nama_pemenang' => 'Test Certificate Full ' . time(),
+    'nama_pemenang' => 'Test Certificate Full '.time(),
 ]);
 
 echo "Created test winner: {$newWinner->nama_pemenang} (ID: {$newWinner->id})\n\n";
@@ -37,17 +36,17 @@ if ($newWinner->certificate) {
     echo "  Nomor: {$newWinner->certificate->nomor_sertifikat}\n";
     echo "  Kode: {$newWinner->certificate->kode_verifikasi}\n";
     echo "  File: {$newWinner->certificate->file_path}\n";
-    
+
     // Check if file exists
-    $filePath = storage_path('app/public/' . $newWinner->certificate->file_path);
+    $filePath = storage_path('app/public/'.$newWinner->certificate->file_path);
     if (file_exists($filePath)) {
         echo "  File exists: YES\n";
-        echo "  Size: " . filesize($filePath) . " bytes\n";
+        echo '  Size: '.filesize($filePath)." bytes\n";
     } else {
         echo "  File exists: NO\n";
         echo "  Path: $filePath\n";
     }
-    
+
     // Check if settings were passed - we can't easily test PDF content but we can verify the job runs
     echo "\nCertificate generation successful!\n";
 } else {

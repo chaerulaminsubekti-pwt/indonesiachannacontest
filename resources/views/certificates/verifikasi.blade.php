@@ -6,9 +6,13 @@
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     @if ($valid && $certificate)
         @php
-            $winner = $certificate->winner;
-            $event = $winner->event;
-            $predikat = $winner->predikat?->nama_predikat ?? $winner->class?->nama_kelas ?? 'Juara';
+            $event = $certificate?->event;
+            $winner = $certificate?->winner;
+            $isParticipant = $certificate && $certificate->participant_id;
+            $nama = $certificate->nama_penerima;
+            $kelas = $winner?->class?->nama_kelas ?? $certificate->participant?->class?->nama_kelas ?? '-';
+            $predikat = $winner?->predikat?->nama_predikat ?? $kelas ?? 'Peserta';
+            $label = $isParticipant ? 'Nama Peserta' : 'Nama Pemenang';
         @endphp
 
         <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-8 text-center">
@@ -24,11 +28,11 @@
 
             <div class="bg-white/80 backdrop-blur rounded-xl p-6 mt-6 text-left space-y-3 text-sm border border-green-100">
                 <div class="grid grid-cols-2 gap-y-3 gap-x-4">
-                    <span class="text-gray-500">Nama Pemenang:</span>
-                    <span class="font-semibold text-gray-900">{{ $winner->nama_pemenang }}</span>
+                    <span class="text-gray-500">{{ $label }}:</span>
+                    <span class="font-semibold text-gray-900">{{ $nama }}</span>
 
                     <span class="text-gray-500">Kelas:</span>
-                    <span class="font-semibold text-gray-900">{{ $winner->class?->nama_kelas ?? '-' }}</span>
+                    <span class="font-semibold text-gray-900">{{ $kelas }}</span>
 
                     <span class="text-gray-500">Event:</span>
                     <span class="font-semibold text-gray-900">{{ $event->nama_event }}</span>

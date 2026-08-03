@@ -1,14 +1,14 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-$app = require_once __DIR__ . '/bootstrap/app.php';
+$app = require_once __DIR__.'/bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 use App\Models\Certificate;
 
 $certs = Certificate::all();
-echo "Total certificates: " . $certs->count() . "\n\n";
+echo 'Total certificates: '.$certs->count()."\n\n";
 
 foreach ($certs as $cert) {
     echo "ID: {$cert->id}\n";

@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Certificate;
+use App\Models\Participant;
 use App\Models\SiteSetting;
-use App\Models\Winner;
 use Barryvdh\DomPDF\Facade\Pdf;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
@@ -13,27 +13,26 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class GenerateCertificateJob
+class GenerateParticipantCertificateJob
 {
     use Dispatchable, Queueable;
 
-    public Winner $winner;
+    public Participant $participant;
 
-    public function __construct(Winner $winner)
+    public function __construct(Participant $participant)
     {
-        $this->winner = $winner;
+        $this->participant = $participant;
     }
 
     public function handle(): void
     {
-        $winner = $this->winner;
-        $event = $winner->event;
+        $participant = $this->participant;
+        $event = $participant->event;
         $settings = SiteSetting::first();
 
         $kodeVerifikasi = strtoupper(Str::random(12));
-        $nomorSertifikat = 'ICC/'.$event->id.'/'.$winner->id.'/'.date('Ymd');
+        $nomorSertifikat = 'ICC/'.$event->id.'/P'.$participant->id.'/'.date('Ymd');
 
-        // Generate QR code as PNG file
         $qrDir = storage_path('app/public/qrcodes');
         if (! is_dir($qrDir)) {
             mkdir($qrDir, 0755, true);
@@ -49,7 +48,7 @@ class GenerateCertificateJob
         (new QRCode($qrOptions))->render(route('verifikasi', $kodeVerifikasi), $qrPath);
 
         $certificate = Certificate::create([
-            'winner_id' => $winner->id,
+            'participant_id' => $participant->id,
             'nomor_sertifikat' => $nomorSertifikat,
             'kode_verifikasi' => $kodeVerifikasi,
             'generated_at' => now(),
@@ -58,21 +57,19 @@ class GenerateCertificateJob
         $logoPath = public_path('images/icc-logo.png');
         $logoExists = file_exists($logoPath);
 
-        // Convert Windows backslashes to forward slashes for DomPDF
         $qrPath = str_replace('\\', '/', $qrPath);
         $logoPath = str_replace('\\', '/', $logoPath);
 
-        $pdf = Pdf::loadView('certificates.template', compact('winner', 'certificate', 'qrPath', 'settings', 'logoPath', 'logoExists'));
+        $pdf = Pdf::loadView('certificates.template-participant', compact('participant', 'certificate', 'qrPath', 'settings', 'logoPath', 'logoExists'));
         $pdf->setPaper('a4', 'landscape');
 
-        $filePath = 'certificates/'.$event->id.'/'.$winner->id.'.pdf';
+        $filePath = 'certificates/'.$event->id.'/participant-'.$participant->id.'.pdf';
 
         Storage::disk('public')->makeDirectory('certificates/'.$event->id);
         $pdf->save(Storage::disk('public')->path($filePath));
 
         $certificate->update(['file_path' => $filePath]);
 
-        // Clean up temp QR file
         if (file_exists($qrPath)) {
             unlink($qrPath);
         }

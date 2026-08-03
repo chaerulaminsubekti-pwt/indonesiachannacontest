@@ -11,7 +11,7 @@ class CertificateController extends Controller
     {
         $certificate = Schema::hasTable('certificates')
             ? Certificate::where('kode_verifikasi', $kode)
-                ->with(['winner.event', 'winner.class', 'winner.predikat'])
+                ->with(['winner.event', 'winner.class', 'winner.predikat', 'participant.event', 'participant.class'])
                 ->first()
             : null;
 
@@ -30,7 +30,7 @@ class CertificateController extends Controller
 
     public function download(Certificate $certificate)
     {
-        $event = $certificate->winner?->event;
+        $event = $certificate->event;
 
         if (! $event || ! in_array($event->status, ['approved', 'berjalan', 'selesai'])) {
             abort(404);
@@ -42,7 +42,7 @@ class CertificateController extends Controller
 
         return response()->download(
             storage_path('app/public/'.$certificate->file_path),
-            'Sertifikat-'.$certificate->winner->nama_pemenang.'.pdf'
+            'Sertifikat-'.$certificate->nama_penerima.'.pdf'
         );
     }
 }

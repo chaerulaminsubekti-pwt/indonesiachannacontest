@@ -21,6 +21,7 @@ class FaviconHelper
         } catch (\Throwable $e) {
             // fallback
         }
+
         return $favicon;
     }
 }

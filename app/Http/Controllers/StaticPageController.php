@@ -39,15 +39,15 @@ class StaticPageController extends Controller
 
     public function download(Regulation $regulation)
     {
-        if (! $regulation->file_path || !Storage::disk('public')->exists($regulation->file_path)) {
+        if (! $regulation->file_path || ! Storage::disk('public')->exists($regulation->file_path)) {
             abort(404);
         }
 
         $extension = pathinfo($regulation->file_path, PATHINFO_EXTENSION);
         $filename = $regulation->nama;
 
-        if (!str_ends_with($filename, '.' . $extension)) {
-            $filename .= '.' . $extension;
+        if (! str_ends_with($filename, '.'.$extension)) {
+            $filename .= '.'.$extension;
         }
 
         return Storage::disk('public')->download($regulation->file_path, $filename);

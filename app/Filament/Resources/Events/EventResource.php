@@ -2,15 +2,14 @@
 
 namespace App\Filament\Resources\Events;
 
-use App\Filament\Resources\Events\Pages\ManageEvents;
-use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRelationManager;
+use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Resources\Events\Pages\ManageEvents;
 use App\Filament\Resources\Events\RelationManagers\EventClassesRelationManager;
 use App\Filament\Resources\Events\RelationManagers\JudgesRelationManager;
 use App\Models\Event;
-use App\Models\Organizer;
-use App\Models\User;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -18,12 +17,12 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\BadgeColumn;
@@ -124,9 +123,8 @@ class EventResource extends Resource
                     ->wrap(),
                 TextColumn::make('tanggal_mulai')
                     ->date('d M Y')
-                    ->description(fn (Event $record) =>
-                        $record->tanggal_mulai != $record->tanggal_selesai
-                            ? 's.d. '.\Carbon\Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
+                    ->description(fn (Event $record) => $record->tanggal_mulai != $record->tanggal_selesai
+                            ? 's.d. '.Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
                             : ''
                     )
                     ->sortable()
@@ -220,6 +218,7 @@ class EventResource extends Resource
                                 ->title('Penyelenggara tidak memiliki user')
                                 ->danger()
                                 ->send();
+
                             return;
                         }
 

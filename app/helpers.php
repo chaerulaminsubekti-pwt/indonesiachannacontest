@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('safe_html')) {
+if (! function_exists('safe_html')) {
     function safe_html(?string $html): string
     {
         if (empty($html)) {

@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             if (Schema::hasTable('site_settings')) {
-                $view->with('settings', SiteSetting::first());
+                $view->with('settings', SiteSetting::first() ?? new SiteSetting);
             }
         });
     }

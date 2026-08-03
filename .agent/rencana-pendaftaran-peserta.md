@@ -1,7 +1,7 @@
 # PLANNING — Sistem Pendaftaran Peserta Kontes (Internal, Mirror Google Sheets)
 
-- **Tanggal:** 2026-08-03 (revisi 2)
-- **Status:** PLANNING (belum dieksekusi)
+- **Tanggal:** 2026-08-03 (revisi 3 — sinkronisasi dengan kondisi real kode)
+- **Status:** DIEKSEKUSI SEBAGIAN / IN-PROGRESS (terdapat gap & bug yang belum diperbaiki)
 - **Aplikasi:** indonesiachannacontest.org
 - **Acuan template:** Google Sheets "Data Peserta Kutuk Meresahkan #5"
 
@@ -32,8 +32,8 @@ Kolom tiap peserta mengikuti template Google Sheets:
 1. **Admin/Penyelenggara menginput kelas yang dibuka** untuk event-nya (mis. YELLOW BEGINNER, AURANTI JUNIOR, LIMBATA BEGINNER, dll).
 2. **Kelas yang diinput tersebut otomatis tersinkron** ke **form pendaftaran peserta** (dropdown "Kelas Ikan").
 3. Di halaman **publik tab "Data Peserta"** muncul kolom:
-   **Nomor, Nama, Alamat, Nama Ikan, Team, No HP, Keterangan (Lunas), Fishin, Fishout**.
-4. Saat **event berjalan / registrasi ulang di venue**:
+   **Nomor, Nama, Alamat, Nama Ikan, Kelas Team, No HP, Keterangan (Lunas), Fishin, Fishout**.
+4. Saat event berjalan / registrasi ulang di venue:
    - Penyelenggara buka **data peserta (sisi admin penyelenggara)**
    - **Ceklis Fishin** (ikan masuk) & **Fishout** (ikan keluar) per peserta.
 5. **Data peserta ini digunakan untuk cetak sertifikat online** (download sertifikat per peserta yang LUNAS).
@@ -49,15 +49,16 @@ Kolom tiap peserta mengikuti template Google Sheets:
    │     Nama Pemilik : (isi)
    │     Team / SF    : (isi)
    │     Nama Ikan    : (isi)
-   │     Jenis Ikan   : (isi)
-   │     Kelas Ikan   : [dropdown = kelas yang dibuka penyelenggara]  (+ harga)
+   │     Kelas Ikan   : [dropdown = kelas yang dibuka penyelenggara]
    │     Kota Asal    : (isi)
    │     No WA        : (isi)
    ├─ klik "Daftar Sekarang"
-   ├─ simpan pendaftaran → status = MENUNGGU BAYAR
+   ├─ simpan pendaftaran → status = MENUNGGU VERIFIKASI
    ├─ Notifikasi pembayaran: nominal (harga kelas) + rekening (bank_accounts)
    └─ (lanjut) upload bukti → status = MENUNGGU VERIFIKASI
 ```
+
+> Implementasi real memakai **2 langkah** (Data Diri → Pembayaran/Upload Bukti). Status langsung `menunggu_verifikasi` saat submit (tanpa langkah `menunggu_bayar` terpisah).
 
 ---
 
@@ -67,7 +68,7 @@ Kolom tiap peserta mengikuti template Google Sheets:
 A. SEBELUM EVENT:
    1. Atur kelas yang dibuka (nama_kelas + harga_tiket) per event.
    2. Atur rekening pembayaran (bank_accounts).
-   3. (opsional) atur biaya daftar.
+   (opsional) atur biaya daftar.
 
 B. VERIFIKASI PENDAFTARAN (online):
     - Lihat daftar pendaftaran + bukti pembayaran.
@@ -80,124 +81,102 @@ C. HARI EVENT (registrasi ulang di venue):
     - Ceklis Fishout = ikan keluar.
 
 D. Cetak sertifikat:
-    - Data peserta LUNAS dipakai untuk generate & cetak sertifikat online.
+    - Data peserta LUNAS difungkan ke sistem sertifikat yang sudah ada.
 ```
 
 ---
+## STATUS IMPLEMENTASI REAL (hasil audit kode, 2026-08-03)
 
-## 5. Perubahan Database (Migration)
+> Berikut status aktual masing-masing bagian terhadap kode yang sudah ada. Tandai/semua hal di bawah perlu verifikasi karena mayoritas fitur klik **belum benar-benar fungsional**.
 
-### 5.1 `event_classes`
-| Kolom | Ket |
-|-------|-----|
-| `id` | PK |
-| `event_id` | FK |
-| `nama_kelas` | (mis. YELLOW PROGRES) |
-| `harga_tiket` | decimal(10,2) nullable — diisi penyelenggara |
+| # | Rencana (Section) | Status di Kode | Catatan |
+|---|---|---|---|
+| 2.1 | Input kelas penyelenggara | ✅ Ada | `EventClassesRelationManager` (Organizer) — bisa tambah/edit `nama_kelas` + `harga_tiket` |
+| 2.2 | Kelas sinkron ke dropdown form | ✅ Ada | `DaftarKontes.blade` dropdown ambil dari `EventClass::where(event_id)` |
+| 2.3 | Tab publik "Data Peserta" kolom lengkap | ⚠️ Belum terhubung | `DaftarPesertaPublik.php` + blade **sudah dibuat**, **TAPI `event/show.blade.php` masih memakai Google Sheets** (blok `google_sheet_url`), belum pakai `<livewire:daftar-peserta-publik>` |
+| 2.3 | Kolom Alamat | ⚠️ Belum ada kolom | blade tampilkan `$peserta->alamat` tapi tidak ada field/migration `alamat` |
+| 4.B | Verifikasi ACC → LUNAS + auto no_urut | ❌ Belum | `ParticipantsRelationManager` masih form lama (`nama_peserta`), tanpa action ACC/Reject, tanpa auto `no_urut` |
+| 4.C | Fishin / Fishout (admin toggle) | ❌ Belum | Blade publik hanya **menampilkan** status fishin/fishout (readonly), admin belum punya toggle |
+| 4.D | Cetak sertifikat dari peserta | ❌ Belum | Belum ada integrasi peserta LUNAS → sertifikat |
 
-### 5.2 `participants` (perluas)
-| Kolom | Ket |
-|-------|-----|
-| `id` | PK |
-| `event_id` | FK |
-| `event_class_id` | FK (kelas ikan) |
-| `nama_pemilik` | string |
-| `team_sf` | string nullable |
-| `nama_ikan` | string |
-| `jenis_ikan` | string nullable |
-| `kota_asal` | string nullable |
-| `no_hp` | string(20) nullable |
-| `status` | enum: `menunggu_bayar`, `menunggu_verifikasi`, `lunas`, `rejected` |
-| `bukti_pembayaran` | string nullable |
-| `no_urut` | int nullable (auto saat lunas) |
-| `fishin` | bool default false |
-| `fishout` | bool default false |
-| `keterangan` | string nullable (ops) |
-| (data lama `nama_peserta`, `no_urut` diperiksa kompatibilitas saat eksekusi) | |
-
-> `keterangan` di publik tampilkan "Lunas"/"Booking" — bisa derivasi dari `status`.
-
-### 5.3 Tabel `bank_accounts`
-| Kolom | Ket |
-|-------|-----|
-| `id` | PK |
-| `event_id` | FK |
-| `nama_bank` | string |
-| `nomor_rekening` | string |
-| `atas_nama` | string |
-| `is_active` | bool |
+### Funan/Livewire yang sudah dibuat
+- `app/Livewire/DaftarKontes.php` + `resources/views/livewire/daftar-kontes.blade.php` — modal 2-step lengkap.
+- `app/Livewire/DaftarPesertaPublik.php` + `resources/views/livewire/daftar-peserta-publik.blade.php` — tabel publik (grup per kelas).
+- Filament Organizer: `EventClassesRelationManager`, `BankAccountsRelationManager`, `ParticipantsRelationManager`, dalam `EventResource`.
 
 ---
 
-## 6. Komponen yang Dibuat
+## 6. GAP / KETIDAKSESUAIAN KODE (harus diperbaiki sebelum berfungsi)
 
-### 6.1 Livewire `DaftarKontes` — modal pendaftaran
-- `app/Livewire/DaftarKontes.php`
-- `resources/views/livewire/daftar-kontes.blade.php`
-- mount(Event), validasi, simpan, alur bukti, ambil data kelas dr event.
+Ditemukan saat audit — inilah masalah yang membuat fitur belum jalan dan **rentan error**:
 
-### 6.2 Livewire `DaftarPesertaPublik` — tab "Data Peserta"
-- Menampilkan peserta **LUNAS** per kelas (dikelompakan nama kelas).
-- Kolom: Nomor | Nama | Alamat | Nama Ikan | Team | No HP | Keterangan | Fishin | Fishout.
+1. **`app/Models/Participant.php` tidak lengkap.**
+   - `$fillable` masih `['event_id', 'event_class_id', 'nama_peserta', 'no_urut']` → kolom baru (`nama_pemilik`, `team_sf`, `nama_ikan`, `kota_asal`, `no_hp`, `status`, `bukti_pembayaran`, `biaya`, `fishin`, `fishout`) TIDAK bisa diisi. `DaftarKontes::create([...])` akan **diam-diam membuang** field-field itu.
+   - **Konstanta STATUS TIDAK ADA.** `Participant::STATUS_MENUNGGU_VERIFIKASI` (dipakai `DaftarKontes.php:116`) dan `Participant::STATUS_LUNAS` (dipakai `DaftarPesertaPublik.php:22`) tidak didefinisikan → **PHP Fatal Error**.
 
-### 6.3 Blade `event/show.blade.php`
-- Tombol "Daftar Kontes" bawah CP + modal.
-- Ganti tab "Data Peserta" → `<livewire:daftar-peserta-publik :event="..."/>`.
+2. **Migration `participants` tidak lengkap / cacat.**
+   - `2026_08_03_025038_add_columns_to_participants` hanya menambah `nama_pemilik`, `team_sf`, `no_hp`. **Belum ada** kolom: `nama_ikan`, `jenis_ikan`, `kota_asal`, `status`, `bukti_pembayaran`, `biaya`, `user_id`, `fishin`, `fishout`.
+   - `2026_08_03_034029_add_dp_amount_to_participants` memakai `->after('biaya')` tetapi kolom `biaya` **belum pernah dibuat** → migration ini akan **gagal**.
+   - Indeks kolom `event_class_id` boleh nullable; sesuai desain.
 
----
+3. **Tabel `bank_accounts` TIDAK ada.**
+   - Tidak ada migration yang membuat tabel `bank_accounts`, padahal model `BankAccount`, `BankAccountsRelationManager`, dan `DaftarKontes` (rekening) menggunakannya → **table missing**.
 
-## 7. Bagian Admin Penyelenggara (Filament Panel)
+4. **Relasi `Event::bankAccounts()` tidak didefinisikan.**
+   - `app/Models/Event.php` hanya punya `classes, participants, winners, galleries, judges, testimonial, flyers, cps`. Tidak ada `bankAccounts()`. Padahal `DaftarKontes.php:46` (`$this->event->bankAccounts()`) dan `BankAccountsRelationManager` (`relationship='bankAccounts'`) membutuhkannya → **method undefined**.
 
-### 7.1 `EventResource`
-- Tambah form untuk **mengatur kelas** (nama_kelas + harga) & **rekening** (bank_accounts).
-- Hapus/sembunyikan `google_sheet_url` (karena peserta internal).
+5. **`event/show.blade.php` belum mengarah ke komponen Livewire baru.**
+   - Tab "Data Peserta" masih menampilkan blok Google Sheets (`google_sheet_url`) / pesan "Belum ada peserta" (show.step line 180–198).
+   - Belum ada `<livewire:daftar-peserta-publik :event="..."/>` maupun tombol `<livewire:daftar-kontes :event="..."/>` di bawah CP.
 
-### 7.2 `ParticipantsRelationManager` (per event)
-- Daftar peserta semua kelas, dengan kolom: No, Nama, Kelas, Team, Nama Ikan, No HP, Status, Bukti, Fishin, Fishout, No Urut.
-- **Action ACC → LUNAS + auto no_urut**; **Reject**; **Lihat Bukti**.
-- Filter by status/kelas.
-- **Fitur registrasi ulang venue**: Tab khusus / tombol toggle **Fishin** & **Fishout** per baris (checkbox).
+6. **`EventClass` `$fillable` belum punya `harga_tiket`.**
+   - Model `EventClass.php:11` hanya `['event_id', 'nama_kelas']` → menyimpan `harga_tiket` di form Filament **tidak akan persist** (kolom sudah ada di migration tapi tidak fillable).
 
-### 7.3 Cetak Sertifikat
-- Data peserta LUNAS difungkan ke sistem sertifikat yang sudah ada (`Certificate` model, GenerateCertificateJob, template.blade) — generate by peserta.
+7. **`ParticipantsRelationManager` belum sesuai rencana (Verifikasi // Fishin/Fishout).**
+   - Masih pakai field lama (`nama_peserta`, `no_urut`), belum ada action **ACC → LUNAS + auto no_urut**, **Reject**, **Lihat Bukti**, **toggle Fishin/Fishout**, filter status/kelas, maupun tab registrasi venue.
 
----
-
-## 8. Auto No Urut (per kelas)
-Saat penegak set LUNAS:
-```php
-no_urut = MAX(no_urut) pada (event_id, event_class_id) + 1
-```
-Dalam `DB::transaction` + `lockForUpdate` di kelas tsb.
+8. **Notifikasi WA/email ke peserta** belum diimplementasikan (catatan rencana poin 6).
 
 ---
 
-## 9. Migrasi & Deploy
-1. Migration baru (participant kolom baru, harga_tiket, bank_accounts).
-2. Uji lokal penuh (per `predeploy-check.ps1`: pint, test, npm build).
-3. Baru deploy (backup + migrate --force).
+## 7. Rencana Perbaikan (next steps untuk menyetempel sesuai plan)
+
+1. Perluas `participants` (migration baru): `user_id`, `nama_ikan`, `jenis_ikan`, `kota_asal`, `alamat`, `status`(enum), `bukti_pembayaran`, `biaya`, `fishin`, `fishout`. (Hati-hati urutan `biaya` sebelum `dp_amount` jika DP dipakai.)
+2. Buat migration `bank_accounts`.
+3. Update `Participant` model: `$fillable` lengkap + konstanta `STATUS_*`.
+4. Tambah relasi `bankAccounts()` di `Event`.
+5. Tambah `harga_tiket` ke `$fillable` `EventClass`.
+6. Wiring `event/show.blade.php` → `daftar-peserta-publik` (tab Data Peserta) + tombol `daftar-kontes`.
+7. Upgrade `ParticipantsRelationManager` (Organizer): ACC→LUNAS + auto no_urut (transaction + `lockForUpdate`), Reject, Lihat Bukti, toggle Fishin/Fishout, filter status/kelas.
+8. Integrasi peserta LUNAS → cetak sertifikat.
+9. Jalankan `predeploy-check.ps1` / pint + test + build setelah perbaikan.
 
 ---
 
-## 10. Checklist Skenario
-- [ ] Penyelenggara bisa input kelas + harga.
-- [ ] Kelas sinkron ke dropdown form duftar.
-- [ ] Peserta mendaftar (1 form 1 ikan), upload bukti.
-- [ ] ACC → LUNAS × muncul Data Publik, urut noormor per kelas.
-- [ ] Kolom publik: No, Nama, Alamat, Nama Ikan, Team, No HP, Keterangan, Fishin, Fishout.
-- [ ] Hari event: admin cek advance Fishin/Fishout.
-- [ ] Cetak sertifikat per peserta LUNAS.
+## 8. Checklist Skenario (diperbarui — status real)
+
+- [x] Komponen Livewire `DaftarKontes` & `DaftarPesertaPublik` dibuat (belum terhubung penuh).
+- [x] Kolom kelas organisasi + harga di panel penyelenggara (Filament) dibuat.
+- [ ] Migration `bank_accounts` ruang (belum).
+- [ ] Kolom peserta lengkap (nama_ikan, alamat, status, bukti, biaya, fishin, fishout) — belum.
+- [ ] Model `Participant` update + konstanta STATUS — belum.
+- [ ] Link `event/show` → Data Peserta publik + tombol daftar — belum.
+- [ ] ACC → LUNAS + auto no_urut per kelas — belum.
+- [ ] Admin toggle Fishin/Fishout hari event — belum.
+- [ ] Cetak sertifikat per peserta LUNAS — belum.
+- [ ] Lint + test (`pint --test`, `composer run-script test`) hijau — belum diverifikasi.
 
 ---
 
-## 11. Catatan / Pertanyaan untuk Pemilik
-1. Kelas = bebas diisi penyelenggara (memanyukan pola sheet). OK.
+**Dokumen ini = rencana + kondisi real.** Bagian yang sudah dieksekusi ditandai `✅`, yang belum selaras ditandai `⚠️`/`❌`, dan **GAP pada Seksi 6 harus diperbaiki dulu** sebelum fitur pendaftaran benar-benar berfungsi.
+
+---
+
+## 9. Catatan / Pertanyaan untuk Pemilik (dipertahankan)
+
+1. Kelas = bebas diisi penyelenggara (memperhatikan pola sheet). OK.
 2. **Pembayaran** manual transfer + validasi (tanpa gateway). OK.
-3. "1 form 1 ikan" — ikan kedua = pendaftaran baru (baris baru). OK.
+3. "1 form 1 gang" — ikan kedua = pendaftaran baru (baris baru). OK.
 4. **No HP di publik** = perlu izin data (privacy). Tetap tampil sesuai template Anda.
-5. **Fishin/Fishout** hanya admin? user berkata "di public" → tampilkan status (centang hijau/abu) tapi togglenya di admin. Konfirmasi.
-6. **Notifikasi ke peserta**: kemungkinan WA (mulai-tingkat lanjutan).
-
----
-
-**Dokumen ini = planning.** Belum ada code/eksekusi. Sampai Anda setuju, belum ada yang diubah.
+5. **Fishin/Fishout** hanya admin? blade publik menampilkan status tapi togglenya di admin — sesuai rencana.
+6. **Notifikasi ke peserta**: WA (lanjutan) — belum diimplementasi.

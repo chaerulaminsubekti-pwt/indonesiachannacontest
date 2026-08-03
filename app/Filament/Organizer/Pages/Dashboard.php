@@ -7,6 +7,7 @@ use App\Filament\Organizer\Widgets\EventStatsOverview;
 use App\Models\Event;
 use App\Models\Organizer;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -72,9 +73,8 @@ class Dashboard extends Page implements HasActions, HasSchemas, HasTable
                     }),
                 TextColumn::make('tanggal_mulai')
                     ->date('d M Y')
-                    ->description(fn (Event $record) =>
-                        $record->tanggal_mulai != $record->tanggal_selesai
-                            ? 's.d. '.\Carbon\Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
+                    ->description(fn (Event $record) => $record->tanggal_mulai != $record->tanggal_selesai
+                            ? 's.d. '.Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
                             : ''
                     )
                     ->sortable()

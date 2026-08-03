@@ -104,8 +104,9 @@ class Testimoni extends Page implements HasForms, HasTable
         $validator->validate();
 
         $organizer = Organizer::where('user_id', auth()->id())->first();
-        if (!$organizer) {
+        if (! $organizer) {
             Notification::make()->title('Data organisasi tidak ditemukan')->danger()->send();
+
             return;
         }
 

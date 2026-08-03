@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
@@ -30,9 +30,9 @@ class VerificationController extends Controller
 
         // Search by both kode_verifikasi and nomor_sertifikat
         $certificate = Certificate::where(function ($query) use ($input) {
-                $query->where('kode_verifikasi', $input)
-                      ->orWhere('nomor_sertifikat', $input);
-            })
+            $query->where('kode_verifikasi', $input)
+                ->orWhere('nomor_sertifikat', $input);
+        })
             ->with(['winner', 'winner.event', 'winner.class', 'winner.predikat'])
             ->first();
 

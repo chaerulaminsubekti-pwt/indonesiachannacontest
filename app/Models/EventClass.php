@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EventClass extends Model
 {
-    protected $fillable = ['event_id', 'nama_kelas'];
+    protected $fillable = ['event_id', 'nama_kelas', 'harga_tiket'];
 
     protected static function booted(): void
     {
         static::created(function (EventClass $class) {
             foreach (self::getDefaultPredikats() as $predikat) {
-                \App\Models\WinnerPredikat::create([
+                WinnerPredikat::create([
                     'event_class_id' => $class->id,
                     'nama_predikat' => $predikat['nama_predikat'],
                     'urutan' => $predikat['urutan'],
@@ -52,7 +52,7 @@ class EventClass extends Model
     {
         $existing = self::where('event_id', $eventId)->pluck('nama_kelas')->toArray();
         foreach (self::getDefaultKelasNames() as $nama) {
-            if (!in_array($nama, $existing)) {
+            if (! in_array($nama, $existing)) {
                 self::create(['event_id' => $eventId, 'nama_kelas' => $nama]);
             }
         }

@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\VerificationController;
 use App\Livewire\PengajuanEvent;
+use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class);
@@ -33,13 +34,14 @@ Route::middleware('guest')->group(function () {
 Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::get('sitemap.xml', function () {
-    $events = \App\Models\Event::whereIn('status', ['approved', 'berjalan', 'selesai'])->get();
+    $events = Event::whereIn('status', ['approved', 'berjalan', 'selesai'])->get();
 
     return response()->view('sitemap', compact('events'))->header('Content-Type', 'text/xml');
 });
 
 Route::get('robots.txt', function () {
     $sitemapUrl = url('/sitemap.xml');
+
     return response("User-agent: *
 Allow: /
 Disallow: /admin

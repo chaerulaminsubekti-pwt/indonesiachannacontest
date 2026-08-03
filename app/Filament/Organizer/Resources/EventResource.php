@@ -3,20 +3,24 @@
 namespace App\Filament\Organizer\Resources;
 
 use App\Filament\Organizer\Resources\EventResource\Pages;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\BankAccountsRelationManager;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventClassesRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventFlyersRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventGalleriesRelationManager;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\ParticipantsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\TestimonialsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\WinnersRelationManager;
 use App\Models\Event;
 use App\Models\Organizer;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -127,9 +131,8 @@ class EventResource extends Resource
                     }),
                 TextColumn::make('tanggal_mulai')
                     ->date('d M Y')
-                    ->description(fn (Event $record) =>
-                        $record->tanggal_mulai != $record->tanggal_selesai
-                            ? 's.d. '.\Carbon\Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
+                    ->description(fn (Event $record) => $record->tanggal_mulai != $record->tanggal_selesai
+                            ? 's.d. '.Carbon::parse($record->tanggal_selesai)->isoFormat('D MMM Y')
                             : ''
                     )
                     ->sortable()
@@ -143,6 +146,9 @@ class EventResource extends Resource
     public static function getRelations(): array
     {
         return [
+            EventClassesRelationManager::class,
+            BankAccountsRelationManager::class,
+            ParticipantsRelationManager::class,
             EventFlyersRelationManager::class,
             EventCpsRelationManager::class,
             WinnersRelationManager::class,

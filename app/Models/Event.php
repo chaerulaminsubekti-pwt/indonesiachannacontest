@@ -80,4 +80,9 @@ class Event extends Model
     {
         return $this->hasMany(EventCp::class);
     }
+
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(BankAccount::class);
+    }
 }

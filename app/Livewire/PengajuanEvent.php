@@ -52,9 +52,13 @@ class PengajuanEvent extends Component
     public string $pic_password_confirmation = '';
 
     public ?int $juri_1 = null;
+
     public ?int $juri_2 = null;
+
     public ?int $juri_3 = null;
+
     public ?int $juri_4 = null;
+
     public ?int $juri_5 = null;
 
     public bool $setuju = false;
@@ -163,6 +167,7 @@ class PengajuanEvent extends Component
     public function render()
     {
         $availableJudges = Judge::orderBy('nama')->get();
+
         return view('livewire.pengajuan-event', compact('availableJudges'));
     }
 }

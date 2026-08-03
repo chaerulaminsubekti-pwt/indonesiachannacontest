@@ -14,6 +14,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class WinnersRelationManager extends RelationManager
 {
@@ -141,7 +142,7 @@ class WinnersRelationManager extends RelationManager
                         $certificate = $record->certificate;
                         if ($certificate) {
                             if ($certificate->file_path) {
-                                \Illuminate\Support\Facades\Storage::disk('public')->delete($certificate->file_path);
+                                Storage::disk('public')->delete($certificate->file_path);
                             }
                             $certificate->delete();
                             Notification::make()

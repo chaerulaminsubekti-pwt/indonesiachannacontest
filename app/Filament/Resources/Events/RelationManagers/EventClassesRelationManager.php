@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Events\RelationManagers;
 
-use App\Models\EventClass;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
