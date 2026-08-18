@@ -77,7 +77,7 @@ class RekapNilaiPublik extends Component
         }
 
         $this->error = null;
-        $this->lastUpdated = now()->format('H:i:s');
+        $this->lastUpdated = now('Asia/Jakarta')->format('H:i:s');
 
         $parsed = $parser->parse($csv);
 
