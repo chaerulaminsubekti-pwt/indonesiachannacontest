@@ -36,8 +36,10 @@ class TeamSingleCounterTest extends TestCase
         $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 10));
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(1, $result['teams']);
-        $this->assertSame(0, $result['single_fighters']);
+        $this->assertCount(1, $result['teams']);
+        $this->assertSame('GMC Kediri', $result['teams'][0]['name']);
+        $this->assertSame(10, $result['teams'][0]['count']);
+        $this->assertCount(0, $result['single_fighters']);
     }
 
     #[Test]
@@ -46,7 +48,7 @@ class TeamSingleCounterTest extends TestCase
         $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 9));
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(0, $result['teams']);
+        $this->assertCount(0, $result['teams']);
     }
 
     #[Test]
@@ -56,7 +58,7 @@ class TeamSingleCounterTest extends TestCase
         $teamB = array_map(fn ($i) => ['Peserta '.$i, 'Gogo Team'], range(1, 10));
         $result = $this->counter()->count($this->rows(array_merge($teamA, $teamB)));
 
-        $this->assertSame(2, $result['teams']);
+        $this->assertCount(2, $result['teams']);
     }
 
     #[Test]
@@ -66,7 +68,8 @@ class TeamSingleCounterTest extends TestCase
         $teamB = array_map(fn ($i) => ['Peserta '.$i, '  gmc kediri  '], range(1, 10));
         $result = $this->counter()->count($this->rows(array_merge($teamA, $teamB)));
 
-        $this->assertSame(1, $result['teams']);
+        $this->assertCount(1, $result['teams']);
+        $this->assertSame(20, $result['teams'][0]['count']);
     }
 
     #[Test]
@@ -75,8 +78,10 @@ class TeamSingleCounterTest extends TestCase
         $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 10));
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(0, $result['teams']);
-        $this->assertSame(1, $result['single_fighters']);
+        $this->assertCount(0, $result['teams']);
+        $this->assertCount(1, $result['single_fighters']);
+        $this->assertSame('Slamet Riyadi', $result['single_fighters'][0]['name']);
+        $this->assertSame(10, $result['single_fighters'][0]['count']);
     }
 
     #[Test]
@@ -91,7 +96,9 @@ class TeamSingleCounterTest extends TestCase
 
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(2, $result['single_fighters']);
+        $this->assertCount(1, $result['single_fighters']);
+        $this->assertSame('Slamet Riyadi', $result['single_fighters'][0]['name']);
+        $this->assertSame(10, $result['single_fighters'][0]['count']);
     }
 
     #[Test]
@@ -100,7 +107,7 @@ class TeamSingleCounterTest extends TestCase
         $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 9));
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(0, $result['single_fighters']);
+        $this->assertCount(0, $result['single_fighters']);
     }
 
     #[Test]
@@ -109,7 +116,7 @@ class TeamSingleCounterTest extends TestCase
         $rows = array_map(fn ($i) => ['Peserta '.$i, null], range(1, 10));
         $result = $this->counter()->count($this->rows($rows));
 
-        $this->assertSame(0, $result['teams']);
-        $this->assertSame(0, $result['single_fighters']);
+        $this->assertCount(0, $result['teams']);
+        $this->assertCount(0, $result['single_fighters']);
     }
 }

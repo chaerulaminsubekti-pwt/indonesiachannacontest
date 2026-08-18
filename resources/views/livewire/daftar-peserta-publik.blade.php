@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
             <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-icc-primary/10 text-icc-primary flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -33,30 +33,49 @@
                 <p class="text-2xl font-bold text-amber-600 tabular-nums">{{ $participantStats['belum_lunas'] }}</p>
             </div>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
-            <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    </div>
+
+    @php
+        $hasQualifiedTeamSf = count($teamSfStats['teams']) > 0 || count($teamSfStats['single_fighters']) > 0;
+    @endphp
+    <div class="rounded-2xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-rose-50 p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="inline-flex items-center gap-2 text-sm font-semibold text-icc-dark uppercase tracking-wider">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-            </span>
-            <div>
-                <p class="text-xs font-medium text-icc-gray uppercase tracking-wider">Jumlah Team</p>
-                <p class="text-2xl font-bold text-indigo-600 tabular-nums">{{ $teamSfStats['teams'] }}</p>
-                <p class="text-[10px] text-icc-gray mt-0.5">min. 10 peserta diakui</p>
-            </div>
+                Team &amp; Single Fighter
+            </h3>
+            <span class="text-[10px] font-medium text-icc-gray bg-white/80 border border-gray-200 rounded-full px-2.5 py-1">Minimal 10 ikan per unit diakui</span>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
-            <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
-            </span>
-            <div>
-                <p class="text-xs font-medium text-icc-gray uppercase tracking-wider">Single Fighter</p>
-                <p class="text-2xl font-bold text-rose-600 tabular-nums">{{ $teamSfStats['single_fighters'] }}</p>
-                <p class="text-[10px] text-icc-gray mt-0.5">min. 10 peserta diakui</p>
+        @if ($hasQualifiedTeamSf)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Team</p>
+                    @forelse ($teamSfStats['teams'] as $team)
+                        <div class="flex items-center justify-between gap-2 bg-white rounded-xl border border-indigo-100 px-4 py-2.5 shadow-sm">
+                            <span class="font-medium text-icc-dark truncate">{{ $team['name'] }}</span>
+                            <span class="inline-flex items-center gap-1 text-sm font-bold text-indigo-600 tabular-nums">{{ $team['count'] }} <span class="text-[10px] font-medium text-icc-gray">ikan</span></span>
+                        </div>
+                    @empty
+                        <p class="text-xs text-icc-gray">Tidak ada team yang mencapai 10 ikan.</p>
+                    @endforelse
+                </div>
+                <div class="space-y-2">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Single Fighter</p>
+                    @forelse ($teamSfStats['single_fighters'] as $single)
+                        <div class="flex items-center justify-between gap-2 bg-white rounded-xl border border-rose-100 px-4 py-2.5 shadow-sm">
+                            <span class="font-medium text-icc-dark truncate">{{ $single['name'] }}</span>
+                            <span class="inline-flex items-center gap-1 text-sm font-bold text-rose-600 tabular-nums">{{ $single['count'] }} <span class="text-[10px] font-medium text-icc-gray">ikan</span></span>
+                        </div>
+                    @empty
+                        <p class="text-xs text-icc-gray">Tidak ada single fighter yang mencapai 10 ikan.</p>
+                    @endforelse
+                </div>
             </div>
-        </div>
+        @else
+            <p class="text-sm text-icc-gray">Belum ada team / single fighter yang mencapai minimal 10 ikan.</p>
+        @endif
     </div>
 
     @if ($participantsByClass->isEmpty())
