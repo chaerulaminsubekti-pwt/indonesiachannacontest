@@ -28,11 +28,23 @@ class DaftarPesertaPublik extends Component
             ->groupBy('event_class_id');
     }
 
+    public function getParticipantStatsProperty(): array
+    {
+        $all = $this->participants->flatten();
+
+        return [
+            'total' => $all->count(),
+            'lunas' => $all->where('status', Participant::STATUS_LUNAS)->count(),
+            'belum_lunas' => $all->where('status', '!=', Participant::STATUS_LUNAS)->count(),
+        ];
+    }
+
     #[Layout('layouts.public')]
     public function render()
     {
         return view('livewire.daftar-peserta-publik', [
             'participantsByClass' => $this->participants,
+            'participantStats' => $this->participantStats,
         ]);
     }
 }

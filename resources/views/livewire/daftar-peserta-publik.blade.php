@@ -1,4 +1,40 @@
 <div class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-icc-primary/10 text-icc-primary flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </span>
+            <div>
+                <p class="text-xs font-medium text-icc-gray uppercase tracking-wider">Total Peserta</p>
+                <p class="text-2xl font-bold text-icc-dark tabular-nums">{{ $participantStats['total'] }}</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-green-100 text-green-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </span>
+            <div>
+                <p class="text-xs font-medium text-icc-gray uppercase tracking-wider">Peserta Lunas</p>
+                <p class="text-2xl font-bold text-green-600 tabular-nums">{{ $participantStats['lunas'] }}</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </span>
+            <div>
+                <p class="text-xs font-medium text-icc-gray uppercase tracking-wider">Belum Lunas</p>
+                <p class="text-2xl font-bold text-amber-600 tabular-nums">{{ $participantStats['belum_lunas'] }}</p>
+            </div>
+        </div>
+    </div>
+
     @if ($participantsByClass->isEmpty())
         <div class="text-center py-12 bg-gray-50 rounded-2xl">
             <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
