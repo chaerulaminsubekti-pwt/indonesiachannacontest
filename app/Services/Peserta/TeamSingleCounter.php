@@ -6,17 +6,19 @@ use Illuminate\Support\Collection;
 
 class TeamSingleCounter
 {
-    public const MIN_PESERTA = 10;
+    public const MIN_TEAM_IKAN = 20;
+
+    public const MIN_SINGLE_FIGHTER_IKAN = 15;
 
     public const SINGLE_FIGHTER_LABEL = 'single fighter';
 
     /**
-     * Hitung daftar team dan single fighter yang diakui (minimal 10 ikan) dari daftar peserta.
+     * Hitung daftar team dan single fighter yang diakui dari daftar peserta.
      *
      * - Team: baris dengan team_sf tidak kosong dan bukan "single fighter",
-     *   dikelompokkan per nama team.
+     *   dikelompokkan per nama team, diakui bila jumlah ikannya >= MIN_TEAM_IKAN.
      * - Single fighter: baris dengan team_sf "single fighter",
-     *   dikelompokkan per orang (nama_pemilik).
+     *   dikelompokkan per orang (nama_pemilik), diakui bila jumlah ikannya >= MIN_SINGLE_FIGHTER_IKAN.
      *
      * @param  Collection<int, Participant>  $participants
      * @return array{teams: array<int, array{name: string, count: int}>, single_fighters: array<int, array{name: string, count: int}>}
@@ -49,8 +51,8 @@ class TeamSingleCounter
         }
 
         return [
-            'teams' => $this->qualifyingUnits($teams),
-            'single_fighters' => $this->qualifyingUnits($singleFighters),
+            'teams' => $this->qualifyingUnits($teams, self::MIN_TEAM_IKAN),
+            'single_fighters' => $this->qualifyingUnits($singleFighters, self::MIN_SINGLE_FIGHTER_IKAN),
         ];
     }
 
@@ -58,9 +60,9 @@ class TeamSingleCounter
      * @param  array<string, array{name: string, count: int}>  $units
      * @return array<int, array{name: string, count: int}>
      */
-    private function qualifyingUnits(array $units): array
+    private function qualifyingUnits(array $units, int $minimum): array
     {
-        $result = array_values(array_filter($units, fn (array $unit): bool => $unit['count'] >= self::MIN_PESERTA));
+        $result = array_values(array_filter($units, fn (array $unit): bool => $unit['count'] >= $minimum));
 
         usort($result, fn (array $a, array $b): int => $b['count'] <=> $a['count']);
 

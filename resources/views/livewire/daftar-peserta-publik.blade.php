@@ -46,7 +46,7 @@
                 </svg>
                 Team &amp; Single Fighter
             </h3>
-            <span class="text-[10px] font-medium text-icc-gray bg-white/80 border border-gray-200 rounded-full px-2.5 py-1">Minimal 10 ikan per unit diakui</span>
+            <span class="text-[10px] font-medium text-icc-gray bg-white/80 border border-gray-200 rounded-full px-2.5 py-1">Min. Team 20 ikan &middot; Single Fighter 15 ikan</span>
         </div>
         @if ($hasQualifiedTeamSf)
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -58,7 +58,7 @@
                             <span class="inline-flex items-center gap-1 text-sm font-bold text-indigo-600 tabular-nums">{{ $team['count'] }} <span class="text-[10px] font-medium text-icc-gray">ikan</span></span>
                         </div>
                     @empty
-                        <p class="text-xs text-icc-gray">Tidak ada team yang mencapai 10 ikan.</p>
+                        <p class="text-xs text-icc-gray">Tidak ada team yang mencapai 20 ikan.</p>
                     @endforelse
                 </div>
                 <div class="space-y-2">
@@ -69,12 +69,12 @@
                             <span class="inline-flex items-center gap-1 text-sm font-bold text-rose-600 tabular-nums">{{ $single['count'] }} <span class="text-[10px] font-medium text-icc-gray">ikan</span></span>
                         </div>
                     @empty
-                        <p class="text-xs text-icc-gray">Tidak ada single fighter yang mencapai 10 ikan.</p>
+                        <p class="text-xs text-icc-gray">Tidak ada single fighter yang mencapai 15 ikan.</p>
                     @endforelse
                 </div>
             </div>
         @else
-            <p class="text-sm text-icc-gray">Belum ada team / single fighter yang mencapai minimal 10 ikan.</p>
+            <p class="text-sm text-icc-gray">Belum ada team / single fighter yang mencapai minimal ikan (Team 20, Single Fighter 15).</p>
         @endif
     </div>
 

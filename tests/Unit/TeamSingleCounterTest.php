@@ -31,21 +31,21 @@ class TeamSingleCounterTest extends TestCase
     }
 
     #[Test]
-    public function team_recognized_when_at_least_10_participants(): void
+    public function team_recognized_when_at_least_20_participants(): void
     {
-        $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 10));
+        $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 20));
         $result = $this->counter()->count($this->rows($rows));
 
         $this->assertCount(1, $result['teams']);
         $this->assertSame('GMC Kediri', $result['teams'][0]['name']);
-        $this->assertSame(10, $result['teams'][0]['count']);
+        $this->assertSame(20, $result['teams'][0]['count']);
         $this->assertCount(0, $result['single_fighters']);
     }
 
     #[Test]
-    public function team_not_recognized_below_10_participants(): void
+    public function team_not_recognized_below_20_participants(): void
     {
-        $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 9));
+        $rows = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 19));
         $result = $this->counter()->count($this->rows($rows));
 
         $this->assertCount(0, $result['teams']);
@@ -54,8 +54,8 @@ class TeamSingleCounterTest extends TestCase
     #[Test]
     public function each_distinct_team_counted_once(): void
     {
-        $teamA = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 10));
-        $teamB = array_map(fn ($i) => ['Peserta '.$i, 'Gogo Team'], range(1, 10));
+        $teamA = array_map(fn ($i) => ['Peserta '.$i, 'GMC Kediri'], range(1, 20));
+        $teamB = array_map(fn ($i) => ['Peserta '.$i, 'Gogo Team'], range(1, 20));
         $result = $this->counter()->count($this->rows(array_merge($teamA, $teamB)));
 
         $this->assertCount(2, $result['teams']);
@@ -73,15 +73,15 @@ class TeamSingleCounterTest extends TestCase
     }
 
     #[Test]
-    public function single_fighter_recognized_when_at_least_10_participants(): void
+    public function single_fighter_recognized_when_at_least_15_participants(): void
     {
-        $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 10));
+        $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 15));
         $result = $this->counter()->count($this->rows($rows));
 
         $this->assertCount(0, $result['teams']);
         $this->assertCount(1, $result['single_fighters']);
         $this->assertSame('Slamet Riyadi', $result['single_fighters'][0]['name']);
-        $this->assertSame(10, $result['single_fighters'][0]['count']);
+        $this->assertSame(15, $result['single_fighters'][0]['count']);
     }
 
     #[Test]
@@ -92,19 +92,19 @@ class TeamSingleCounterTest extends TestCase
             ['Slamet Riyadi', 'Single Fighter'],
             ['Budi Utomo', 'Single Fighter'],
         ];
-        $rows = array_merge($rows, array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 8)));
+        $rows = array_merge($rows, array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 13)));
 
         $result = $this->counter()->count($this->rows($rows));
 
         $this->assertCount(1, $result['single_fighters']);
         $this->assertSame('Slamet Riyadi', $result['single_fighters'][0]['name']);
-        $this->assertSame(10, $result['single_fighters'][0]['count']);
+        $this->assertSame(15, $result['single_fighters'][0]['count']);
     }
 
     #[Test]
-    public function single_fighter_not_recognized_below_10_participants(): void
+    public function single_fighter_not_recognized_below_15_participants(): void
     {
-        $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 9));
+        $rows = array_map(fn ($i) => ['Slamet Riyadi', 'Single Fighter'], range(1, 14));
         $result = $this->counter()->count($this->rows($rows));
 
         $this->assertCount(0, $result['single_fighters']);
