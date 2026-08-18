@@ -62,6 +62,8 @@ class EventController extends Controller
 
         $classes = EventClass::where('event_id', $event->id)->get();
 
-        return view('event.show', compact('event', 'winners', 'galleries', 'classes'));
+        $hasRekap = $classes->contains(fn (EventClass $class): bool => filled($class->rekap_sheet_url));
+
+        return view('event.show', compact('event', 'winners', 'galleries', 'classes', 'hasRekap'));
     }
 }

@@ -34,6 +34,10 @@ class EventClassesRelationManager extends RelationManager
                     ->numeric()->prefix('Rp')->step(1000)
                     ->placeholder('Contoh: 250000')
                     ->helperText('Kosongkan jika gratis'),
+                TextInput::make('rekap_sheet_url')
+                    ->label('Link Google Sheets (Rekap Nilai)')
+                    ->placeholder('https://docs.google.com/spreadsheets/d/.../edit#gid=0')
+                    ->helperText('Link tab rekap kelas ini (mis. "Yellow Progres"). Sheet harus dibagikan sebagai "Anyone with the link" (Viewer). Link /edit diubah otomatis ke CSV. Kosongkan jika kelas ini belum pakai rekap online.'),
             ]);
     }
 
@@ -53,6 +57,11 @@ class EventClassesRelationManager extends RelationManager
                     ->label('Jumlah Peserta')
                     ->counts('participants')
                     ->sortable(),
+                TextColumn::make('rekap_sheet_url')
+                    ->label('Rekap Online')
+                    ->formatStateUsing(fn (?string $state): string => filled($state) ? 'Terpasang' : 'Belum')
+                    ->badge()
+                    ->color(fn (?string $state): string => filled($state) ? 'success' : 'gray'),
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([

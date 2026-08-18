@@ -180,6 +180,10 @@
                 class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Data Peserta</button>
             <button @click="tab = 'juara'" :class="tab === 'juara' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
                 class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Sertifikat Juara</button>
+            @if ($hasRekap)
+            <button @click="tab = 'rekap'" :class="tab === 'rekap' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
+                class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Rekap Nilai</button>
+            @endif
             <button @click="tab = 'gallery'" :class="tab === 'gallery' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
                 class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Gallery Event</button>
         </div>
@@ -190,6 +194,11 @@
         <div x-show="tab === 'juara'" x-cloak>
             @include('event.partials.winners')
         </div>
+        @if ($hasRekap)
+        <div x-show="tab === 'rekap'" x-cloak>
+            <livewire:rekap-nilai-publik :event="$event" />
+        </div>
+        @endif
         <div x-show="tab === 'gallery'" x-cloak>
             @include('event.partials.gallery')
         </div>
