@@ -25,6 +25,11 @@
     --color-icc-primary-pink: #FF1A1A;
 }
 
+/* Alpine.js: sembunyikan elemen sebelum inisialisasi */
+[x-cloak] {
+    display: none;
+}
+
 /* Swiper Pagination */
 .swiper-pagination-bullet {
     background: rgba(255, 255, 255, 0.6);
