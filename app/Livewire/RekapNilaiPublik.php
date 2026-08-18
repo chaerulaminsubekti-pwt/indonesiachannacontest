@@ -54,7 +54,7 @@ class RekapNilaiPublik extends Component
         $class = $this->selectedClass;
         if ($class) {
             $parser = app(SheetScoreParser::class);
-            Cache::forget('rekap_sheet:'.md5($parser->normalizeCsvUrl($class->rekap_sheet_url)));
+            Cache::forget('rekap_sheet:'.md5($parser->normalizeCsvUrl($class->rekap_sheet_url, $class->rekap_sheet_gid)));
         }
         $this->error = null;
     }
@@ -67,7 +67,7 @@ class RekapNilaiPublik extends Component
         }
 
         $parser = app(SheetScoreParser::class);
-        $csv = $parser->fetch($class->rekap_sheet_url);
+        $csv = $parser->fetch($class->rekap_sheet_url, $class->rekap_sheet_gid);
 
         if ($csv === null) {
             $this->error = 'Gagal mengambil data dari Google Sheets. Pastikan link sudah benar dan sheet dibagikan sebagai "Anyone with the link" (Viewer).';

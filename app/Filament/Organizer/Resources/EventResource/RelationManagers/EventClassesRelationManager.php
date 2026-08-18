@@ -36,8 +36,13 @@ class EventClassesRelationManager extends RelationManager
                     ->helperText('Kosongkan jika gratis'),
                 TextInput::make('rekap_sheet_url')
                     ->label('Link Google Sheets (Rekap Nilai)')
-                    ->placeholder('https://docs.google.com/spreadsheets/d/.../edit#gid=0')
-                    ->helperText('Link tab rekap kelas ini (mis. "Yellow Progres"). Sheet harus dibagikan sebagai "Anyone with the link" (Viewer). Link /edit diubah otomatis ke CSV. Kosongkan jika kelas ini belum pakai rekap online.'),
+                    ->placeholder('https://docs.google.com/spreadsheets/d/.../edit')
+                    ->helperText('Tempel link utama sheet (satu link bisa dipakai untuk semua kelas). Sheet harus dibagikan sebagai "Anyone with the link" (Viewer).'),
+                TextInput::make('rekap_sheet_gid')
+                    ->label('Tab Kelas (gid)')
+                    ->numeric()
+                    ->placeholder('Contoh: 2062756512')
+                    ->helperText('Klik tab kelas pada sheet (mis. "Yellow Progres"), salin angka setelah "#gid=" di URL browser lalu isi di sini. Kosongkan untuk memakai tab pertama (gid 0).'),
             ]);
     }
 
@@ -59,9 +64,17 @@ class EventClassesRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('rekap_sheet_url')
                     ->label('Rekap Online')
-                    ->formatStateUsing(fn (?string $state): string => filled($state) ? 'Terpasang' : 'Belum')
+                    ->formatStateUsing(function ($record): string {
+                        if (! filled($record->rekap_sheet_url)) {
+                            return 'Belum';
+                        }
+
+                        return filled($record->rekap_sheet_gid)
+                            ? 'Terpasang (gid '.$record->rekap_sheet_gid.')'
+                            : 'Terpasang (tab 1)';
+                    })
                     ->badge()
-                    ->color(fn (?string $state): string => filled($state) ? 'success' : 'gray'),
+                    ->color(fn ($record): string => filled($record->rekap_sheet_url) ? 'success' : 'gray'),
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([

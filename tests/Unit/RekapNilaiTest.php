@@ -99,5 +99,16 @@ class RekapNilaiTest extends TestCase
             'https://docs.google.com/spreadsheets/d/abc123/export?format=csv&gid=2',
             $parser->normalizeCsvUrl('https://docs.google.com/spreadsheets/d/abc123/export?format=csv&gid=2')
         );
+
+        // Satu link utama, gid ditentukan per kelas (override)
+        $this->assertSame(
+            'https://docs.google.com/spreadsheets/d/abc123/export?format=csv&gid=7',
+            $parser->normalizeCsvUrl('https://docs.google.com/spreadsheets/d/abc123/edit', '7')
+        );
+
+        $this->assertSame(
+            'https://docs.google.com/spreadsheets/d/abc123/export?format=csv&gid=0',
+            $parser->normalizeCsvUrl('https://docs.google.com/spreadsheets/d/abc123/edit')
+        );
     }
 }

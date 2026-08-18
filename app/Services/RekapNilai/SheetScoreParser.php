@@ -21,35 +21,40 @@ class SheetScoreParser
 
     public const CACHE_TTL_SECONDS = 30;
 
-    public function normalizeCsvUrl(string $url): string
+    public function normalizeCsvUrl(string $url, ?string $gid = null): string
     {
         $url = trim($url);
 
-        if (str_contains($url, 'export?format=csv') || str_contains($url, 'gviz/tq')) {
-            return $url;
-        }
+        $spreadsheetId = null;
+        $urlGid = null;
 
-        if (! preg_match('#/spreadsheets/d/([a-zA-Z0-9_-]+)#', $url, $matches)) {
-            return $url;
+        if (preg_match('#/spreadsheets/d/([a-zA-Z0-9_-]+)#', $url, $matches)) {
+            $spreadsheetId = $matches[1];
         }
-
-        $spreadsheetId = $matches[1];
-        $gid = 0;
 
         if (preg_match('/[?&#]gid=(\d+)/', $url, $gidMatch)) {
-            $gid = (int) $gidMatch[1];
+            $urlGid = $gidMatch[1];
         }
+
+        if ($spreadsheetId === null) {
+            // Bukan link Google Sheets — biarkan apa adanya (mis. sudah URL CSV / gviz)
+            return $url;
+        }
+
+        $resolvedGid = $gid !== null && trim($gid) !== ''
+            ? (int) $gid
+            : (int) ($urlGid ?? 0);
 
         return sprintf(
             'https://docs.google.com/spreadsheets/d/%s/export?format=csv&gid=%d',
             $spreadsheetId,
-            $gid
+            $resolvedGid
         );
     }
 
-    public function fetch(string $url): ?string
+    public function fetch(string $url, ?string $gid = null): ?string
     {
-        $csvUrl = $this->normalizeCsvUrl($url);
+        $csvUrl = $this->normalizeCsvUrl($url, $gid);
         $cacheKey = 'rekap_sheet:'.md5($csvUrl);
 
         return Cache::remember($cacheKey, now()->addSeconds(self::CACHE_TTL_SECONDS), function () use ($csvUrl) {
