@@ -77,7 +77,7 @@ class SheetScoreParser
     }
 
     /**
-     * @return array{criteria: array<int, string>, tanks: array<int, array{no_tank: int, rows: array<int, array{juri: string, values: array<int, float>}>}>}
+     * @return array{criteria: array<int, string>, sessions: array<int, array{name: string, indices: array<int, int>}>, tanks: array<int, array{no_tank: int, rows: array<int, array{juri: string, values: array<int, float>}>}>}
      */
     public function parse(string $csv): array
     {
@@ -85,13 +85,74 @@ class SheetScoreParser
         $headerIndex = $this->findHeaderRow($rows);
 
         if ($headerIndex === null) {
-            return ['criteria' => self::DEFAULT_CRITERIA, 'tanks' => []];
+            return [
+                'criteria' => self::DEFAULT_CRITERIA,
+                'sessions' => $this->defaultSessions(count(self::DEFAULT_CRITERIA)),
+                'tanks' => [],
+            ];
         }
 
         $criteria = $this->readCriteriaLabels($rows, $headerIndex);
+        $sessions = $this->readSessions($rows, $headerIndex, count($criteria));
         $tanks = $this->groupTanks(array_slice($rows, $headerIndex + 1));
 
-        return ['criteria' => $criteria, 'tanks' => $tanks];
+        return ['criteria' => $criteria, 'sessions' => $sessions, 'tanks' => $tanks];
+    }
+
+    /**
+     * Baris header sesi (baris tepat di atas label kriteria) berisi label seperti
+     * "SESI 1" dan "Sesi 2". Cell yang ter-merge hanya berisi label di kolom pertama,
+     * sehingga label di-propagasikan ke kolom berikutnya.
+     *
+     * @param  array<int, array<int, string>>  $rows
+     * @return array<int, array{name: string, indices: array<int, int>}>
+     */
+    private function readSessions(array $rows, int $headerIndex, int $criteriaCount): array
+    {
+        $labels = [];
+        $last = null;
+
+        foreach (self::CRITERIA_COLUMNS as $col) {
+            $cell = trim((string) ($rows[$headerIndex][$col] ?? ''));
+            if ($cell !== '') {
+                $last = $cell;
+            }
+            $labels[] = $last;
+        }
+
+        $hasLabels = count(array_filter($labels, fn (?string $label): bool => $label !== null)) > 0;
+
+        $sessions = [];
+        $current = null;
+
+        foreach (self::CRITERIA_COLUMNS as $pos => $col) {
+            if ($hasLabels) {
+                $label = $labels[$pos] ?? ($current['name'] ?? 'Sesi 1');
+            } else {
+                // Template default: 5 kriteria sesi 1, sisanya sesi 2
+                $label = $pos < 5 ? 'Sesi 1' : 'Sesi 2';
+            }
+
+            if ($current === null || $current['name'] !== $label) {
+                $sessions[] = ['name' => $label, 'indices' => []];
+                $current = &$sessions[count($sessions) - 1];
+            }
+
+            $current['indices'][] = $pos;
+        }
+
+        return $sessions;
+    }
+
+    /**
+     * @return array<int, array{name: string, indices: array<int, int>}>
+     */
+    private function defaultSessions(int $criteriaCount): array
+    {
+        return [
+            ['name' => 'Sesi 1', 'indices' => range(0, min(4, $criteriaCount - 1))],
+            ['name' => 'Sesi 2', 'indices' => range(min(5, $criteriaCount), $criteriaCount - 1)],
+        ];
     }
 
     /**

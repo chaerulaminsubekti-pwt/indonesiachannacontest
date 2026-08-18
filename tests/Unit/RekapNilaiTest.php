@@ -52,6 +52,19 @@ class RekapNilaiTest extends TestCase
     }
 
     #[Test]
+    public function parses_sessions_from_sheet_header(): void
+    {
+        $parser = new SheetScoreParser;
+        $parsed = $parser->parse($this->sampleCsv());
+
+        $this->assertCount(2, $parsed['sessions']);
+        $this->assertSame('SESI 1', $parsed['sessions'][0]['name']);
+        $this->assertSame([0, 1, 2, 3, 4], $parsed['sessions'][0]['indices']);
+        $this->assertSame('Sesi 2', $parsed['sessions'][1]['name']);
+        $this->assertSame(range(5, 17), $parsed['sessions'][1]['indices']);
+    }
+
+    #[Test]
     public function computes_grand_total_ranking_and_juara(): void
     {
         $parser = new SheetScoreParser;

@@ -18,7 +18,7 @@ class RekapCalculator
 
     /**
      * @param  array{criteria: array<int, string>, tanks: array<int, array{no_tank: int, rows: array<int, array{juri: string, values: array<int, float>}>}>}  $parsed
-     * @return array{criteria: array<int, string>, tanks: array<int, array<string, mixed>>}
+     * @return array{criteria: array<int, string>, sessions: array<int, array{name: string, indices: array<int, int>}>, tanks: array<int, array<string, mixed>>}
      */
     public function calculate(array $parsed): array
     {
@@ -75,7 +75,11 @@ class RekapCalculator
 
         usort($result, fn (array $a, array $b): int => $a['ranking_juara'] <=> $b['ranking_juara']);
 
-        return ['criteria' => $parsed['criteria'], 'tanks' => $result];
+        return [
+            'criteria' => $parsed['criteria'],
+            'sessions' => $parsed['sessions'] ?? [],
+            'tanks' => $result,
+        ];
     }
 
     /**

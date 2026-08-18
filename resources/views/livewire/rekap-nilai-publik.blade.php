@@ -168,11 +168,24 @@
                                             <span class="text-xs font-semibold text-icc-dark">{{ $judge['juri'] }}</span>
                                             <span class="text-xs font-bold text-[#FF1A1A] tabular-nums">{{ $judge['subtotal'] }}</span>
                                         </div>
-                                        <div class="grid grid-cols-3 gap-1.5">
-                                            @foreach ($recap['criteria'] as $index => $criterion)
-                                                <div class="bg-white rounded-lg border border-gray-100 px-2 py-1.5 flex items-center justify-between gap-1">
-                                                    <span class="text-[10px] text-icc-gray leading-tight truncate" title="{{ $criterion }}">{{ $criterion }}</span>
-                                                    <span class="text-xs font-bold text-icc-dark tabular-nums">{{ (int) $judge['values'][$index] }}</span>
+                                        <div class="space-y-2">
+                                            @foreach ($recap['sessions'] as $session)
+                                                @php
+                                                    $sessionTotal = array_sum(array_map(fn ($i) => (int) $judge['values'][$i], $session['indices']));
+                                                @endphp
+                                                <div>
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <span class="text-[9px] font-bold uppercase tracking-widest text-[#FF1A1A]">{{ $session['name'] }}</span>
+                                                        <span class="text-[10px] font-semibold text-icc-gray tabular-nums">{{ $sessionTotal }}</span>
+                                                    </div>
+                                                    <div class="grid grid-cols-3 gap-1.5">
+                                                        @foreach ($session['indices'] as $index)
+                                                            <div class="bg-white rounded-lg border border-gray-100 px-2 py-1.5 flex items-center justify-between gap-1">
+                                                                <span class="text-[10px] text-icc-gray leading-tight truncate" title="{{ $recap['criteria'][$index] }}">{{ $recap['criteria'][$index] }}</span>
+                                                                <span class="text-xs font-bold text-icc-dark tabular-nums">{{ (int) $judge['values'][$index] }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -193,7 +206,7 @@
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-icc-primary/10 to-icc-primary-dark/10 px-5 py-3 border-b border-gray-100 flex items-center justify-between gap-3">
                     <h3 class="font-semibold text-icc-dark">{{ $selectedClass?->nama_kelas }}</h3>
-                    <span class="text-xs text-icc-gray">Klik <b>Detail</b> untuk melihat 18 kriteria &middot; centang untuk membandingkan</span>
+                    <span class="text-xs text-icc-gray">Klik <b>Detail</b> untuk melihat 18 kriteria (Sesi 1 &amp; Sesi 2) &middot; centang untuk membandingkan</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -278,11 +291,24 @@
                                                             Subtotal {{ $judge['subtotal'] }}
                                                         </span>
                                                     </div>
-                                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                                        @foreach ($recap['criteria'] as $index => $criterion)
-                                                            <div class="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2">
-                                                                <p class="text-[10px] text-icc-gray leading-tight">{{ $criterion }}</p>
-                                                                <p class="text-base font-bold text-icc-dark tabular-nums">{{ (int) $judge['values'][$index] }}</p>
+                                                    <div class="space-y-3">
+                                                        @foreach ($recap['sessions'] as $session)
+                                                            @php
+                                                                $sessionTotal = array_sum(array_map(fn ($i) => (int) $judge['values'][$i], $session['indices']));
+                                                            @endphp
+                                                            <div>
+                                                                <div class="flex items-center justify-between mb-2">
+                                                                    <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md bg-icc-primary/10 text-[#FF1A1A]">{{ $session['name'] }}</span>
+                                                                    <span class="text-[11px] font-semibold text-icc-gray">Skor sesi: <span class="text-icc-dark tabular-nums">{{ $sessionTotal }}</span></span>
+                                                                </div>
+                                                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                                                    @foreach ($session['indices'] as $index)
+                                                                        <div class="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2">
+                                                                            <p class="text-[10px] text-icc-gray leading-tight">{{ $recap['criteria'][$index] }}</p>
+                                                                            <p class="text-base font-bold text-icc-dark tabular-nums">{{ (int) $judge['values'][$index] }}</p>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
                                                             </div>
                                                         @endforeach
                                                     </div>
