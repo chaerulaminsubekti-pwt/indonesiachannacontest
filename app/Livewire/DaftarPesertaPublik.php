@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Event;
 use App\Models\Participant;
+use App\Services\Peserta\TeamSingleCounter;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -39,12 +40,18 @@ class DaftarPesertaPublik extends Component
         ];
     }
 
+    public function getTeamSfStatsProperty(): array
+    {
+        return app(TeamSingleCounter::class)->count($this->participants->flatten());
+    }
+
     #[Layout('layouts.public')]
     public function render()
     {
         return view('livewire.daftar-peserta-publik', [
             'participantsByClass' => $this->participants,
             'participantStats' => $this->participantStats,
+            'teamSfStats' => $this->teamSfStats,
         ]);
     }
 }
