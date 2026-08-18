@@ -78,6 +78,7 @@
                             <option value="Mini Contest">Mini Contest</option>
                             <option value="Regional">Regional</option>
                             <option value="Nasional">Nasional</option>
+                            <option value="Series ICC">Series ICC</option>
                         </select>
                         @error('kategori') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>

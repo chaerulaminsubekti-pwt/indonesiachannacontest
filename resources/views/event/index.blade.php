@@ -14,7 +14,7 @@
                 {{ empty($selectedKategori) ? 'bg-[#FF1A1A] text-white border-[#FF1A1A]' : 'bg-white text-gray-500 border-gray-300 hover:border-[#FF1A1A] hover:text-[#FF1A1A]' }}">
             Semua
         </a>
-        @foreach (['Nasional', 'Regional', 'Mini Contest', 'Latber'] as $kat)
+        @foreach (['Nasional', 'Regional', 'Mini Contest', 'Latber', 'Series ICC'] as $kat)
             <a href="{{ route('event.index', array_merge(request()->except('kategori', 'page'), ['kategori' => $kat])) }}"
                 class="px-4 py-2 text-sm font-semibold rounded-lg border transition
                     {{ $selectedKategori === $kat ? 'bg-[#FF1A1A] text-white border-[#FF1A1A]' : 'bg-white text-gray-500 border-gray-300 hover:border-[#FF1A1A] hover:text-[#FF1A1A]' }}">

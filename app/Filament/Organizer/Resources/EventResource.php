@@ -60,6 +60,7 @@ class EventResource extends Resource
                                 'mini_contest' => 'Mini Contest',
                                 'regional' => 'Regional',
                                 'nasional' => 'Nasional',
+                                'series_icc' => 'Series ICC',
                             ])
                             ->required(),
                         TextInput::make('tema')->maxLength(255),
@@ -118,6 +119,7 @@ class EventResource extends Resource
                         'Mini Contest' => 'info',
                         'Regional' => 'warning',
                         'Nasional' => 'success',
+                        'Series ICC' => 'danger',
                         default => 'gray',
                     }),
                 TextColumn::make('status')

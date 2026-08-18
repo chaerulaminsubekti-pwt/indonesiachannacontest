@@ -18,20 +18,14 @@ class DaftarPesertaPublik extends Component
 
     public function getParticipantsProperty()
     {
-        $pending = Participant::where('event_id', $this->event->id)
-            ->where('status', '!=', Participant::STATUS_LUNAS)
+        return Participant::where('event_id', $this->event->id)
             ->where('status', '!=', Participant::STATUS_REJECTED)
             ->with('class')
+            ->orderByRaw('no_urut IS NULL')
             ->orderBy('no_urut')
-            ->get();
-
-        $lunas = Participant::where('event_id', $this->event->id)
-            ->where('status', Participant::STATUS_LUNAS)
-            ->with('class')
-            ->orderBy('no_urut')
-            ->get();
-
-        return $pending->concat($lunas)->groupBy('event_class_id');
+            ->orderBy('id')
+            ->get()
+            ->groupBy('event_class_id');
     }
 
     #[Layout('layouts.public')]

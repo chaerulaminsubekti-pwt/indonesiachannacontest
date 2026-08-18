@@ -48,7 +48,9 @@ class ParticipantsRelationManager extends RelationManager
                     ->required(),
                 TextInput::make('no_urut')
                     ->label('No. Urut')
-                    ->numeric(),
+                    ->numeric()
+                    ->disabled()
+                    ->helperText('Diatur otomatis sesuai urutan pendaftaran.'),
                 TextInput::make('nama_pemilik')->label('Nama Pemilik')->required()->maxLength(255),
                 TextInput::make('team_sf')->label('Team / SF')->maxLength(255),
                 TextInput::make('nama_ikan')->label('Nama Ikan')->maxLength(255),
@@ -202,7 +204,8 @@ class ParticipantsRelationManager extends RelationManager
                     ->iconButton()
                     ->requiresConfirmation(),
             ])
-            ->defaultSort('created_at');
+            ->defaultSort('event_class_id')
+            ->modifyQueryUsing(fn ($query) => $query->orderBy('event_class_id')->orderBy('no_urut'));
     }
 
     private function markAsLunas(Participant $record): void

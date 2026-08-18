@@ -83,7 +83,7 @@ class PengajuanEvent extends Component
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'venue' => 'required|string|max:255',
-            'kategori' => 'required|in:Latber,Mini Contest,Regional,Nasional',
+            'kategori' => 'required|in:Latber,Mini Contest,Regional,Nasional,Series ICC',
             'tema' => 'nullable|string|max:255',
             'wilayah_kota' => 'required|string|max:255',
             'juri_1' => 'nullable|exists:judges,id',

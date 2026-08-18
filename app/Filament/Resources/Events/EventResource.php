@@ -60,6 +60,7 @@ class EventResource extends Resource
                                 'Mini Contest' => 'Mini Contest',
                                 'Regional' => 'Regional',
                                 'Nasional' => 'Nasional',
+                                'Series ICC' => 'Series ICC',
                             ])->required(),
                         TextInput::make('tema')
                             ->maxLength(255),
@@ -140,6 +141,7 @@ class EventResource extends Resource
                         'Mini Contest' => 'info',
                         'Regional' => 'warning',
                         'Nasional' => 'success',
+                        'Series ICC' => 'danger',
                         default => 'gray',
                     }),
                 BadgeColumn::make('status')
@@ -167,6 +169,7 @@ class EventResource extends Resource
                     'Mini Contest' => 'Mini Contest',
                     'Regional' => 'Regional',
                     'Nasional' => 'Nasional',
+                    'Series ICC' => 'Series ICC',
                 ]),
             ])
             ->recordActions([

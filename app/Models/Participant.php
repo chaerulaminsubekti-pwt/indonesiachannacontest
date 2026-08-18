@@ -90,4 +90,78 @@ class Participant extends Model
 
         return self::statuses()[$this->status] ?? ucfirst((string) $this->status);
     }
+
+    public static function renumberSequence(?int $eventId, ?int $classId): void
+    {
+        if (! $eventId || ! $classId) {
+            return;
+        }
+
+        $number = 1;
+
+        self::query()
+            ->where('event_id', $eventId)
+            ->where('event_class_id', $classId)
+            ->where('status', '!=', self::STATUS_REJECTED)
+            ->orderByRaw('no_urut IS NULL')
+            ->orderBy('no_urut')
+            ->orderBy('id')
+            ->get()
+            ->each(function (self $participant) use (&$number): void {
+                if ((int) $participant->no_urut !== $number) {
+                    $participant->timestamps = false;
+                    $participant->no_urut = $number;
+                    $participant->saveQuietly();
+                }
+
+                $number++;
+            });
+    }
+
+    public static function renumberAll(): int
+    {
+        $updated = 0;
+
+        $classIds = self::query()
+            ->whereNotNull('event_class_id')
+            ->distinct()
+            ->pluck('event_class_id');
+
+        foreach ($classIds as $classId) {
+            $eventId = self::query()
+                ->where('event_class_id', $classId)
+                ->value('event_id');
+
+            if (! $eventId) {
+                continue;
+            }
+
+            $before = self::query()
+                ->where('event_id', $eventId)
+                ->where('event_class_id', $classId)
+                ->where('status', '!=', self::STATUS_REJECTED)
+                ->whereNotNull('no_urut')
+                ->pluck('no_urut')
+                ->sort()
+                ->values()
+                ->toArray();
+
+            self::renumberSequence((int) $eventId, (int) $classId);
+
+            $after = self::query()
+                ->where('event_id', $eventId)
+                ->where('event_class_id', $classId)
+                ->where('status', '!=', self::STATUS_REJECTED)
+                ->pluck('no_urut')
+                ->sort()
+                ->values()
+                ->toArray();
+
+            if ($before !== $after) {
+                $updated++;
+            }
+        }
+
+        return $updated;
+    }
 }

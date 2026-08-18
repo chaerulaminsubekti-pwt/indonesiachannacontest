@@ -7,6 +7,7 @@ $kBadge = match ($k) {
     'regional' => ['bg' => 'bg-emerald-600', 'label' => 'Regional'],
     'mini_contest' => ['bg' => 'bg-violet-600', 'label' => 'Mini Contest'],
     'latber' => ['bg' => 'bg-sky-600', 'label' => 'Latber'],
+    'series_icc', 'series icc' => ['bg' => 'bg-rose-600', 'label' => 'Series ICC'],
     default => ['bg' => 'bg-gray-600', 'label' => $event->kategori],
 };
 @endphp
