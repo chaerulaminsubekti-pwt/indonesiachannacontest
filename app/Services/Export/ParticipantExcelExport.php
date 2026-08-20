@@ -65,6 +65,18 @@ class ParticipantExcelExport
             $this->styleSheet($sheet, $row - 1);
         }
 
+        if ($spreadsheet->getSheetCount() === 0) {
+            $sheet = $spreadsheet->createSheet();
+            $sheet->setTitle('Peserta');
+            $sheet->setCellValue('A1', $title);
+
+            foreach (self::HEADERS as $col => $header) {
+                $sheet->setCellValue(self::column($col + 1).'5', $header);
+            }
+
+            $this->styleSheet($sheet, 5);
+        }
+
         return $spreadsheet;
     }
 

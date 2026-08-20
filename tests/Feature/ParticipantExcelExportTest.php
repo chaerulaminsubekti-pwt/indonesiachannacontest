@@ -110,6 +110,16 @@ class ParticipantExcelExportTest extends TestCase
         $this->assertStringEndsWith('(2)', $names[1]);
     }
 
+    public function test_build_handles_event_without_classes(): void
+    {
+        $event = $this->makeEvent();
+
+        $spreadsheet = app(ParticipantExcelExport::class)->build($event);
+
+        $this->assertCount(1, $spreadsheet->getSheetNames());
+        $this->assertSame('DAFTAR PESERTA TEST CONTEST', $spreadsheet->getSheet(0)->getCell('A1')->getValue());
+    }
+
     public function test_download_returns_xlsx_file(): void
     {
         $event = $this->makeEvent();
