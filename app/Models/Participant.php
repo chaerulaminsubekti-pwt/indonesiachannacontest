@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Participant extends Model
 {
@@ -89,6 +90,80 @@ class Participant extends Model
         }
 
         return self::statuses()[$this->status] ?? ucfirst((string) $this->status);
+    }
+
+    public static function nextNoUrut(?int $eventId, ?int $classId): int
+    {
+        if (! $eventId || ! $classId) {
+            return 1;
+        }
+
+        $max = self::query()
+            ->where('event_id', $eventId)
+            ->where('event_class_id', $classId)
+            ->where('status', '!=', self::STATUS_REJECTED)
+            ->max('no_urut');
+
+        return (int) $max + 1;
+    }
+
+    public static function ensureNoUrut(Participant $participant): void
+    {
+        if ($participant->status === self::STATUS_REJECTED) {
+            return;
+        }
+
+        $duplicate = self::query()
+            ->where('event_id', $participant->event_id)
+            ->where('event_class_id', $participant->event_class_id)
+            ->where('status', '!=', self::STATUS_REJECTED)
+            ->where('no_urut', $participant->no_urut)
+            ->where('id', '!=', $participant->id)
+            ->exists();
+
+        if ($participant->no_urut === null || $duplicate) {
+            $participant->timestamps = false;
+            $participant->no_urut = self::nextNoUrut($participant->event_id, $participant->event_class_id);
+            $participant->saveQuietly();
+        }
+    }
+
+    /**
+     * Tetapkan nomor urut untuk peserta. Jika nomor sudah dipakai peserta lain
+     * di kelas yang sama (non-rejected), terjadi swap otomatis agar nomor tetap unik.
+     */
+    public static function assignNoUrut(Participant $participant, int $target): array
+    {
+        if ($target < 1 || $participant->status === self::STATUS_REJECTED) {
+            return ['swapped' => false, 'opponent' => null];
+        }
+
+        return DB::transaction(function () use ($participant, $target): array {
+            $holder = self::query()
+                ->where('event_id', $participant->event_id)
+                ->where('event_class_id', $participant->event_class_id)
+                ->where('status', '!=', self::STATUS_REJECTED)
+                ->where('no_urut', $target)
+                ->where('id', '!=', $participant->id)
+                ->lockForUpdate()
+                ->first();
+
+            $oldNumber = $participant->no_urut;
+
+            $participant->timestamps = false;
+            $participant->no_urut = $target;
+            $participant->saveQuietly();
+
+            if ($holder) {
+                $holder->timestamps = false;
+                $holder->no_urut = $oldNumber ?? self::nextNoUrut($participant->event_id, $participant->event_class_id);
+                $holder->saveQuietly();
+
+                return ['swapped' => true, 'opponent' => $holder];
+            }
+
+            return ['swapped' => false, 'opponent' => null];
+        });
     }
 
     public static function renumberSequence(?int $eventId, ?int $classId): void

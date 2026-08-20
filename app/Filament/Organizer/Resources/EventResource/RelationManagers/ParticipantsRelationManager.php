@@ -154,6 +154,39 @@ class ParticipantsRelationManager extends RelationManager
                         (new GenerateParticipantCertificateJob($record))->handle();
                         Notification::make()->title('Sertifikat berhasil digenerate')->success()->send();
                     }),
+                Action::make('atur_no_urut')
+                    ->label('Atur No. Urut')
+                    ->icon('heroicon-o-tag')
+                    ->color('primary')
+                    ->iconButton()
+                    ->visible(fn (Participant $record) => $record->status !== Participant::STATUS_REJECTED)
+                    ->form([
+                        TextInput::make('no_urut')
+                            ->label('Nomor Urut')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1)
+                            ->maxValue(999)
+                            ->default(fn (Participant $record) => $record->no_urut)
+                            ->helperText('Jika nomor sudah dipakai peserta lain di kelas ini, nomor akan ditukar otomatis (swap).'),
+                    ])
+                    ->action(function (Participant $record, array $data): void {
+                        $result = Participant::assignNoUrut($record, (int) $data['no_urut']);
+
+                        if ($result['swapped'] && $result['opponent']) {
+                            Notification::make()
+                                ->title('Nomor urut "'.$record->nama_tampil.'" diubah ke No. '.$data['no_urut'].'. "'.$result['opponent']->nama_tampil.'" pindah ke No. '.$result['opponent']->no_urut.'.')
+                                ->success()
+                                ->send();
+
+                            return;
+                        }
+
+                        Notification::make()
+                            ->title('Nomor urut "'.$record->nama_tampil.'" diubah ke No. '.$data['no_urut'].'.')
+                            ->success()
+                            ->send();
+                    }),
                 Action::make('catat_dp')
                     ->label('Catat DP')
                     ->icon('heroicon-o-banknotes')
