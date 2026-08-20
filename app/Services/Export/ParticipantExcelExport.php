@@ -29,7 +29,7 @@ class ParticipantExcelExport
             ->with(['participants' => fn ($query) => $query
                 ->where('status', '!=', Participant::STATUS_REJECTED)
                 ->orderByRaw('no_urut IS NULL')
-                ->orderBy('no_urut')
+                ->orderByRaw('no_urut + 0')
                 ->orderBy('id')])
             ->orderBy('id')
             ->get();

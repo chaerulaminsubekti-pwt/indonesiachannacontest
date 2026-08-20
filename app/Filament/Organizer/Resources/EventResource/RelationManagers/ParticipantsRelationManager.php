@@ -238,7 +238,7 @@ class ParticipantsRelationManager extends RelationManager
                     ->requiresConfirmation(),
             ])
             ->defaultSort('event_class_id')
-            ->modifyQueryUsing(fn ($query) => $query->orderBy('event_class_id')->orderBy('no_urut'));
+            ->modifyQueryUsing(fn ($query) => $query->orderBy('event_class_id')->orderByRaw('no_urut + 0')->orderBy('id'));
     }
 
     private function markAsLunas(Participant $record): void

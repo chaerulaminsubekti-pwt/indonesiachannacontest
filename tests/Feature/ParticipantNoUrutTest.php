@@ -165,4 +165,35 @@ class ParticipantNoUrutTest extends TestCase
 
         $this->assertNull($a->fresh()->no_urut);
     }
+
+    public function test_query_orders_no_urut_numerically(): void
+    {
+        $event = $this->makeEvent();
+        $class = $this->makeClass($event, 'Andrao');
+        $this->makeParticipant($event, $class, 'B', 2);
+        $this->makeParticipant($event, $class, 'A', 1);
+        $this->makeParticipant($event, $class, 'D', 12);
+        $this->makeParticipant($event, $class, 'C', 3);
+
+        $order = Participant::where('event_id', $event->id)
+            ->where('event_class_id', $class->id)
+            ->where('status', '!=', Participant::STATUS_REJECTED)
+            ->orderByRaw('no_urut IS NULL')
+            ->orderByRaw('no_urut + 0')
+            ->orderBy('id')
+            ->pluck('nama_pemilik')
+            ->all();
+
+        $this->assertSame(['A', 'B', 'C', 'D'], $order);
+    }
+
+    public function test_next_no_urut_handles_double_digit(): void
+    {
+        $event = $this->makeEvent();
+        $class = $this->makeClass($event, 'Andrao');
+        $this->makeParticipant($event, $class, 'A', 9);
+        $this->makeParticipant($event, $class, 'B', 10);
+
+        $this->assertSame(11, Participant::nextNoUrut($event->id, $class->id));
+    }
 }

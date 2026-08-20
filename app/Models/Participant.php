@@ -102,7 +102,7 @@ class Participant extends Model
             ->where('event_id', $eventId)
             ->where('event_class_id', $classId)
             ->where('status', '!=', self::STATUS_REJECTED)
-            ->max('no_urut');
+            ->max(DB::raw('no_urut + 0'));
 
         return (int) $max + 1;
     }
@@ -179,7 +179,7 @@ class Participant extends Model
             ->where('event_class_id', $classId)
             ->where('status', '!=', self::STATUS_REJECTED)
             ->orderByRaw('no_urut IS NULL')
-            ->orderBy('no_urut')
+            ->orderByRaw('no_urut + 0')
             ->orderBy('id')
             ->get()
             ->each(function (self $participant) use (&$number): void {

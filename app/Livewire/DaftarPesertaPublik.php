@@ -23,7 +23,7 @@ class DaftarPesertaPublik extends Component
             ->where('status', '!=', Participant::STATUS_REJECTED)
             ->with('class')
             ->orderByRaw('no_urut IS NULL')
-            ->orderBy('no_urut')
+            ->orderByRaw('no_urut + 0')
             ->orderBy('id')
             ->get()
             ->groupBy('event_class_id');

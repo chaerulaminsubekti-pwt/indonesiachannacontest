@@ -130,7 +130,7 @@ class DaftarKontes extends Component
                     $max = Participant::where('event_id', $this->event->id)
                         ->where('event_class_id', $kelas->id)
                         ->lockForUpdate()
-                        ->max('no_urut');
+                        ->max(DB::raw('no_urut + 0'));
 
                     Participant::create([
                         'event_id' => $this->event->id,
