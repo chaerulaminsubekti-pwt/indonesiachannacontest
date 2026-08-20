@@ -59,6 +59,12 @@
                     <livewire:daftar-kontes :event="$event" />
                 </div>
             @endif
+
+            @if (in_array($event->status, ['berjalan', 'approved']) && in_array(strtolower($event->kategori), ['series_icc', 'series icc']))
+                <div class="mt-4 flex justify-center">
+                    <livewire:daftar-team-sf :event="$event" />
+                </div>
+            @endif
         </div>
 
         <div class="lg:col-span-2">
@@ -174,10 +180,17 @@
     </div>
 
     {{-- Tabs --}}
+    @php
+        $isSeries = in_array(strtolower($event->kategori), ['series_icc', 'series icc']);
+    @endphp
     <div x-data="{ tab: 'peserta' }">
         <div class="flex gap-1 mb-6 border-b border-gray-200">
             <button @click="tab = 'peserta'" :class="tab === 'peserta' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
                 class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Data Peserta</button>
+            @if ($isSeries)
+            <button @click="tab = 'teamsf'" :class="tab === 'teamsf' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
+                class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Team / SF</button>
+            @endif
             <button @click="tab = 'juara'" :class="tab === 'juara' ? 'border-b-2 border-[#FF1A1A] text-[#FF1A1A]' : 'text-[#0A0A0A] hover:text-[#FF1A1A]'"
                 class="px-4 py-2.5 text-sm font-medium transition-all rounded-t-lg">Sertifikat Juara</button>
             @if ($hasRekap)
@@ -191,6 +204,11 @@
         <div x-show="tab === 'peserta'" x-cloak>
             <livewire:daftar-peserta-publik :event="$event" />
         </div>
+        @if ($isSeries)
+        <div x-show="tab === 'teamsf'" x-cloak>
+            <livewire:team-sf-publik :event="$event" />
+        </div>
+        @endif
         <div x-show="tab === 'juara'" x-cloak>
             @include('event.partials.winners')
         </div>

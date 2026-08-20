@@ -85,4 +85,9 @@ class Event extends Model
     {
         return $this->hasMany(BankAccount::class);
     }
+
+    public function teamSfRegistrations(): HasMany
+    {
+        return $this->hasMany(TeamSfRegistration::class);
+    }
 }

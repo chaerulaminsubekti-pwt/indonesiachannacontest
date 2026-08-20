@@ -9,6 +9,7 @@ use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRela
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventFlyersRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventGalleriesRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\ParticipantsRelationManager;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\TeamSfRegistrationsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\TestimonialsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\WinnersRelationManager;
 use App\Models\Event;
@@ -151,6 +152,7 @@ class EventResource extends Resource
             EventClassesRelationManager::class,
             BankAccountsRelationManager::class,
             ParticipantsRelationManager::class,
+            TeamSfRegistrationsRelationManager::class,
             EventFlyersRelationManager::class,
             EventCpsRelationManager::class,
             WinnersRelationManager::class,
