@@ -64,10 +64,12 @@ class UserResource extends Resource
                     'super_admin' => 'danger',
                     'editor' => 'warning',
                     'penyelenggara' => 'success',
+                    default => 'gray',
                 }),
                 BadgeColumn::make('status')->color(fn (string $state): string => match ($state) {
                     'active' => 'success',
                     'inactive' => 'gray',
+                    default => 'gray',
                 }),
                 TextColumn::make('created_at')->dateTime('d M Y')->sortable(),
             ])
