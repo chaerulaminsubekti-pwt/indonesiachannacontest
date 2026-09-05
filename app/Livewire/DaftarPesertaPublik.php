@@ -26,7 +26,8 @@ class DaftarPesertaPublik extends Component
             ->orderByRaw('no_urut + 0')
             ->orderBy('id')
             ->get()
-            ->groupBy('event_class_id');
+            ->groupBy('event_class_id')
+            ->sortBy(fn ($list) => mb_strtolower($list->first()->class?->nama_kelas ?? ''));
     }
 
     public function getParticipantStatsProperty(): array
