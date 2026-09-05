@@ -26,11 +26,16 @@ class EventSponsorsRelationManager extends RelationManager
             ->components([
                 FileUpload::make('logo_path')
                     ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->directory('event-sponsors')
                     ->disk('public')
-                    ->maxSize(2048)
+                    ->maxSize(5120)
+                    ->imageResizeMode('contain')
+                    ->imageResizeTargetWidth('800')
+                    ->imageResizeUpscale(false)
                     ->required()
-                    ->label('Logo Sponsor'),
+                    ->label('Logo Sponsor')
+                    ->helperText('Format JPG/PNG/WebP, maksimal 5 MB. Gambar besar otomatis dikecilkan.'),
                 TextInput::make('urutan')
                     ->numeric()
                     ->default(0)
