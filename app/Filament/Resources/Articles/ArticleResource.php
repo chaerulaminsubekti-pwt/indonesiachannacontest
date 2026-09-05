@@ -90,7 +90,12 @@ class ArticleResource extends Resource
                         RichEditor::make('isi')
                             ->label('Isi Artikel')
                             ->required()
-                            ->disableToolbarButtons(['attachFiles'])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('articles/content')
+                            ->fileAttachmentsVisibility('public')
+                            ->fileAttachmentsAcceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->fileAttachmentsMaxSize(5120)
+                            ->helperText('Gambar bisa disisipkan langsung dari toolbar editor (JPG/PNG/WebP, maks 5 MB per gambar).')
                             ->columnSpanFull(),
                     ]),
             ]);
