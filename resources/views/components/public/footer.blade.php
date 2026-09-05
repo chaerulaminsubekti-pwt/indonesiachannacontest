@@ -13,12 +13,12 @@
             </div>
 
             <div>
-                <h3 class="text-white font-bold text-lg mb-3">Link Cepat</h3>
+                <h3 class="text-white font-bold text-lg mb-3">Informasi</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-[#FF1A1A] transition">Regulasi ICC</a></li>
-                    <li><a href="#" class="hover:text-[#FF1A1A] transition">Pengajuan Event</a></li>
-                    <li><a href="#" class="hover:text-[#FF1A1A] transition">Daftar Juri Aktif</a></li>
-                    <li><a href="#" class="hover:text-[#FF1A1A] transition">Struktur Organisasi</a></li>
+                    <li><a href="{{ route('tentang') }}" class="hover:text-[#FF1A1A] transition">Tentang ICC</a></li>
+                    <li><a href="{{ route('privasi') }}" class="hover:text-[#FF1A1A] transition">Kebijakan Privasi</a></li>
+                    <li><a href="{{ route('kontak') }}" class="hover:text-[#FF1A1A] transition">Kontak</a></li>
+                    <li><a href="{{ route('disclaimer') }}" class="hover:text-[#FF1A1A] transition">Disclaimer</a></li>
                 </ul>
             </div>
 

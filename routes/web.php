@@ -6,6 +6,7 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\VerificationController;
 use App\Livewire\PengajuanEvent;
@@ -21,6 +22,10 @@ Route::get('pengajuan', PengajuanEvent::class)->name('pengajuan');
 Route::get('struktur-organisasi', [StaticPageController::class, 'struktur'])->name('struktur');
 Route::get('daftar-juri', [StaticPageController::class, 'juri'])->name('juri');
 Route::get('regulasi', [StaticPageController::class, 'regulasi'])->name('regulasi');
+Route::get('tentang', [InfoController::class, 'tentang'])->name('tentang');
+Route::get('kebijakan-privasi', [InfoController::class, 'privasi'])->name('privasi');
+Route::get('kontak', [InfoController::class, 'kontak'])->name('kontak');
+Route::get('disclaimer', [InfoController::class, 'disclaimer'])->name('disclaimer');
 Route::get('artikel', [ArticleController::class, 'index'])->name('artikel.index');
 Route::get('artikel/{slug}', [ArticleController::class, 'show'])->name('artikel.show');
 Route::post('artikel/{slug}/komentar', [ArticleController::class, 'comment'])

@@ -49,6 +49,26 @@
         <changefreq>monthly</changefreq>
     </url>
     <url>
+        <loc>{{ route('tentang') }}</loc>
+        <priority>0.5</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>{{ route('privasi') }}</loc>
+        <priority>0.5</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>{{ route('kontak') }}</loc>
+        <priority>0.5</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>{{ route('disclaimer') }}</loc>
+        <priority>0.5</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
         <loc>{{ route('artikel.index') }}</loc>
         <priority>0.8</priority>
         <changefreq>daily</changefreq>
