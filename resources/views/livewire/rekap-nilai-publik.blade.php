@@ -3,12 +3,35 @@
     {{-- Overlay loading saat memperbarui / ganti kelas --}}
     <div wire:loading.flex wire:target="refresh, selectClass"
         class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-3">
-            <svg class="w-10 h-10 text-[#FF1A1A] animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-            </svg>
-            <p class="text-sm font-semibold text-icc-dark">Memperbarui rekap nilai...</p>
+        <div class="bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-2 w-72">
+            {{-- Ikan berjalan: melintasi lintasan, ekor mengibas --}}
+            <div class="fish-track relative w-44 h-16 overflow-hidden">
+                <div class="fish-runner absolute top-2 left-0">
+                    <svg class="w-12 h-12 text-[#FF1A1A]" viewBox="0 0 48 48" fill="currentColor">
+                        <ellipse cx="20" cy="24" rx="13" ry="9"/>
+                        <polygon class="fish-tail" points="32,24 44,15 44,33"/>
+                        <circle cx="14" cy="21" r="2.2" fill="#fff"/>
+                        <circle cx="14" cy="21" r="1" fill="#0A0A0A"/>
+                    </svg>
+                </div>
+                <div class="absolute bottom-1 left-2 right-2 flex justify-between">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 bubble b1"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 bubble b2"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 bubble b3"></span>
+                </div>
+            </div>
+            <style>
+                @keyframes fish-run { 0% { transform: translateX(-56px); } 100% { transform: translateX(176px); } }
+                @keyframes fish-bob { 0%, 100% { margin-top: 0; } 50% { margin-top: 8px; } }
+                @keyframes tail-wag { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.55); } }
+                @keyframes bubble-rise { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-14px); opacity: 0; } }
+                .fish-runner { animation: fish-run 2.2s linear infinite, fish-bob 0.55s ease-in-out infinite; }
+                .fish-runner .fish-tail { transform-origin: 32px 24px; animation: tail-wag 0.35s ease-in-out infinite; }
+                .fish-track .bubble { animation: bubble-rise 1.4s ease-in infinite; }
+                .fish-track .b2 { animation-delay: 0.45s; }
+                .fish-track .b3 { animation-delay: 0.9s; }
+            </style>
+            <p class="text-sm font-semibold text-icc-dark mt-1">Memperbarui rekap nilai...</p>
             <p class="text-xs text-icc-gray">Mengambil data terbaru dari Google Sheets</p>
         </div>
     </div>
