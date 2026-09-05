@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="space-y-6" x-data="{ open: null }">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
             <span class="flex-shrink-0 w-11 h-11 rounded-xl bg-icc-primary/10 text-icc-primary flex items-center justify-center">
@@ -90,11 +90,20 @@
     @else
         @foreach ($participantsByClass as $classId => $pesertaList)
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-icc-primary/10 to-icc-primary-dark/10 px-5 py-3 border-b border-gray-100">
-                    <h3 class="font-semibold text-icc-dark">
+                <button type="button" @click="open === {{ $loop->index }} ? open = null : open = {{ $loop->index }}"
+                    class="w-full flex items-center justify-between gap-3 bg-gradient-to-r from-icc-primary/10 to-icc-primary-dark/10 px-5 py-3 text-left hover:from-icc-primary/15 transition">
+                    <span class="font-semibold text-icc-dark">
                         {{ $pesertaList->first()->class?->nama_kelas ?? 'Kelas Tidak Diketahui' }}
-                    </h3>
-                </div>
+                    </span>
+                    <span class="flex items-center gap-2 flex-shrink-0">
+                        <span class="text-xs font-bold text-icc-primary bg-white border border-gray-200 rounded-full px-2.5 py-0.5 tabular-nums">{{ $pesertaList->count() }} peserta</span>
+                        <svg class="w-5 h-5 text-icc-gray transition-transform" :class="open === {{ $loop->index }} ? 'rotate-180' : ''"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </span>
+                </button>
+                <div x-show="open === {{ $loop->index }}" x-transition x-cloak>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 border-b border-gray-100">
@@ -155,6 +164,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         @endforeach
