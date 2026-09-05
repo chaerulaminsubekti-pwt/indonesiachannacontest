@@ -161,12 +161,33 @@ class SheetScoreParser
     private function findHeaderRow(array $rows): ?int
     {
         foreach ($rows as $index => $row) {
-            if (trim((string) ($row[0] ?? '')) === 'No Tank') {
+            if (strtolower(trim((string) ($row[0] ?? ''))) === 'no tank') {
+                return $index;
+            }
+
+            // Toleransi: sel "No Tank" rusak/kosong (mis. terisi "t") —
+            // kenali baris header dari kolom JURI + label SESI.
+            if (strtolower(trim((string) ($row[1] ?? ''))) === 'juri'
+                && $this->rowMentionsSession($row)) {
                 return $index;
             }
         }
 
         return null;
+    }
+
+    /**
+     * @param  array<int, string>  $row
+     */
+    private function rowMentionsSession(array $row): bool
+    {
+        foreach ($row as $cell) {
+            if (stristr((string) $cell, 'sesi') !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

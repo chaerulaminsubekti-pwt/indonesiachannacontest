@@ -94,6 +94,28 @@ class RekapNilaiTest extends TestCase
     }
 
     #[Test]
+    public function parses_header_with_damaged_no_tank_cell(): void
+    {
+        // Kasus nyata: sel "No Tank" terisi "t" — parser tetap harus menemukan header.
+        $csv = implode("\n", [
+            ',,REKAP PENILAIAN KUTUK MERESAHKAN #5,,,,,,,,,,,,,,,,,,,,,,,,',
+            ',,KELAS RED PROGRES 15 - 20 CM,,,,,,,,,,,,,,,,,,,,,,,,',
+            ',,,,,,,,,,,,,,,,,,,,,,,,,,',
+            't,JURI,SESI 1,,,,,,Sesi 2,,,,,,,,,,,,,,SUB TOTAL,GRAND TOTAL,RANKING POINT,HELPER HEAD TO HEAD,RANKING JUARA',
+            ',,Penguasaan Tank,Mental,Warna Badan,Warna Fin,Kepekatan Bar,,Proporsi Bunga,Ekstra Bunga,Presisi Bar,Proporsi Badan,Anatomi,,,,,,,,,,,,,,',
+            ',,,,,,,,,,,,Mata,Mulut,Sungut,Badan,Dorsal,Dayung,Dasi,Anal,Ekor,,,,,,',
+            ',,,,,,,,,,,,,,,,,,,,,,,,,,',
+            '1,TYO,11,,,,,,,,,,,,,,,,,,,,11,21,1,"21,21",1',
+        ]);
+
+        $parsed = (new SheetScoreParser)->parse($csv);
+
+        $this->assertCount(1, $parsed['tanks']);
+        $this->assertSame(1, $parsed['tanks'][0]['no_tank']);
+        $this->assertSame('TYO', $parsed['tanks'][0]['rows'][0]['juri']);
+    }
+
+    #[Test]
     public function normalizes_google_sheet_edit_url_to_csv_export(): void
     {
         $parser = new SheetScoreParser;
