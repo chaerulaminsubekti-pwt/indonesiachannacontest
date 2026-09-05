@@ -179,6 +179,20 @@
         </div>
     </div>
 
+    @if ($event->sponsors->isNotEmpty())
+    <div class="mb-12">
+        <span class="text-icc-gray text-xs font-medium uppercase tracking-wider">Sponsor</span>
+        <div class="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory sm:flex-wrap sm:justify-center sm:overflow-visible">
+            @foreach ($event->sponsors as $sponsor)
+                <div class="flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm w-28 h-16 flex items-center justify-center p-2">
+                    <img src="{{ Storage::url($sponsor->logo_path) }}" alt="Sponsor {{ $event->nama_event }}"
+                        class="max-w-full max-h-full object-contain" loading="lazy">
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Tabs --}}
     @php
         $isSeries = in_array(strtolower($event->kategori), ['series_icc', 'series icc']);

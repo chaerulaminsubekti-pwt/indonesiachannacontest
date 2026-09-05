@@ -48,7 +48,7 @@ class EventController extends Controller
 
         $event = Event::where('slug', $slug)
             ->whereIn('status', ['approved', 'berjalan', 'selesai'])
-            ->with('organizer.user', 'classes', 'judges', 'cps')
+            ->with('organizer.user', 'classes', 'judges', 'cps', 'sponsors')
             ->firstOrFail();
 
         $winners = Winner::where('event_id', $event->id)

@@ -90,4 +90,9 @@ class Event extends Model
     {
         return $this->hasMany(TeamSfRegistration::class);
     }
+
+    public function sponsors(): HasMany
+    {
+        return $this->hasMany(EventSponsor::class)->orderBy('urutan')->orderBy('id');
+    }
 }

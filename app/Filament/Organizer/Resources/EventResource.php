@@ -8,6 +8,7 @@ use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventClasses
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventFlyersRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventGalleriesRelationManager;
+use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventSponsorsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\ParticipantsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\TeamSfRegistrationsRelationManager;
 use App\Filament\Organizer\Resources\EventResource\RelationManagers\TestimonialsRelationManager;
@@ -157,6 +158,7 @@ class EventResource extends Resource
             EventCpsRelationManager::class,
             WinnersRelationManager::class,
             EventGalleriesRelationManager::class,
+            EventSponsorsRelationManager::class,
             TestimonialsRelationManager::class,
         ];
     }

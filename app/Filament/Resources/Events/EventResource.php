@@ -6,6 +6,7 @@ use App\Filament\Organizer\Resources\EventResource\RelationManagers\EventCpsRela
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ManageEvents;
 use App\Filament\Resources\Events\RelationManagers\EventClassesRelationManager;
+use App\Filament\Resources\Events\RelationManagers\EventSponsorsRelationManager;
 use App\Filament\Resources\Events\RelationManagers\JudgesRelationManager;
 use App\Models\Event;
 use BackedEnum;
@@ -258,6 +259,7 @@ class EventResource extends Resource
         return [
             EventClassesRelationManager::class,
             EventCpsRelationManager::class,
+            EventSponsorsRelationManager::class,
             JudgesRelationManager::class,
         ];
     }
