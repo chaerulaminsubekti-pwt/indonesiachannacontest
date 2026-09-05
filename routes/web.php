@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\EventController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\VerificationController;
 use App\Livewire\PengajuanEvent;
+use App\Models\Article;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +21,10 @@ Route::get('pengajuan', PengajuanEvent::class)->name('pengajuan');
 Route::get('struktur-organisasi', [StaticPageController::class, 'struktur'])->name('struktur');
 Route::get('daftar-juri', [StaticPageController::class, 'juri'])->name('juri');
 Route::get('regulasi', [StaticPageController::class, 'regulasi'])->name('regulasi');
+Route::get('artikel', [ArticleController::class, 'index'])->name('artikel.index');
+Route::get('artikel/{slug}', [ArticleController::class, 'show'])->name('artikel.show');
+Route::post('artikel/{slug}/komentar', [ArticleController::class, 'comment'])
+    ->name('artikel.comment')->middleware('throttle:5,1');
 Route::get('regulasi/{regulation}/download', [StaticPageController::class, 'download'])->name('regulasi.download');
 Route::get('verifikasi/{kode}', [CertificateController::class, 'verifikasi'])->name('verifikasi');
 Route::get('sertifikat/{certificate}/download', [CertificateController::class, 'download'])->name('sertifikat.download');
@@ -35,8 +41,9 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middl
 
 Route::get('sitemap.xml', function () {
     $events = Event::whereIn('status', ['approved', 'berjalan', 'selesai'])->get();
+    $articles = Article::published()->get();
 
-    return response()->view('sitemap', compact('events'))->header('Content-Type', 'text/xml');
+    return response()->view('sitemap', compact('events', 'articles'))->header('Content-Type', 'text/xml');
 });
 
 Route::get('robots.txt', function () {

@@ -48,4 +48,17 @@
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>
     </url>
+    <url>
+        <loc>{{ route('artikel.index') }}</loc>
+        <priority>0.8</priority>
+        <changefreq>daily</changefreq>
+    </url>
+    @foreach ($articles ?? [] as $article)
+    <url>
+        <loc>{{ route('artikel.show', $article->slug) }}</loc>
+        <priority>0.7</priority>
+        <changefreq>weekly</changefreq>
+        <lastmod>{{ $article->updated_at->toW3cString() }}</lastmod>
+    </url>
+    @endforeach
 </urlset>

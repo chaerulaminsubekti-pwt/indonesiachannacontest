@@ -18,6 +18,7 @@
                 <a href="{{ route('struktur') }}" class="px-3 py-1.5 text-sm font-medium text-[#0A0A0A] hover:text-[#FF1A1A] hover:bg-[#FF1A1A]/10 rounded-lg transition-all">Struktur</a>
                 <a href="{{ route('juri') }}" class="px-3 py-1.5 text-sm font-medium text-[#0A0A0A] hover:text-[#FF1A1A] hover:bg-[#FF1A1A]/10 rounded-lg transition-all">Juri</a>
                 <a href="{{ route('regulasi') }}" class="px-3 py-1.5 text-sm font-medium text-[#0A0A0A] hover:text-[#FF1A1A] hover:bg-[#FF1A1A]/10 rounded-lg transition-all">Regulasi</a>
+                <a href="{{ route('artikel.index') }}" class="px-3 py-1.5 text-sm font-medium text-[#0A0A0A] hover:text-[#FF1A1A] hover:bg-[#FF1A1A]/10 rounded-lg transition-all">Artikel</a>
 
                 @auth
                     @if(auth()->user()->hasAnyRole(['super_admin', 'editor']))
@@ -56,6 +57,7 @@
             <a href="{{ route('struktur') }}" class="block px-3 py-2 text-sm font-medium text-[#0A0A0A] rounded-lg hover:bg-[#FF1A1A]/10 hover:text-[#FF1A1A] transition">Struktur Organisasi</a>
             <a href="{{ route('juri') }}" class="block px-3 py-2 text-sm font-medium text-[#0A0A0A] rounded-lg hover:bg-[#FF1A1A]/10 hover:text-[#FF1A1A] transition">Daftar Juri</a>
             <a href="{{ route('regulasi') }}" class="block px-3 py-2 text-sm font-medium text-[#0A0A0A] rounded-lg hover:bg-[#FF1A1A]/10 hover:text-[#FF1A1A] transition">Regulasi</a>
+            <a href="{{ route('artikel.index') }}" class="block px-3 py-2 text-sm font-medium text-[#0A0A0A] rounded-lg hover:bg-[#FF1A1A]/10 hover:text-[#FF1A1A] transition">Artikel</a>
 
             @auth
                 @if(auth()->user()->hasAnyRole(['super_admin', 'editor']))
