@@ -1,5 +1,17 @@
 <div class="space-y-6" wire:poll.30s
     x-data="{ compare: [], openTank: null, showCompare: false }">
+    {{-- Overlay loading saat memperbarui / ganti kelas --}}
+    <div wire:loading.flex wire:target="refresh, selectClass"
+        class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-3">
+            <svg class="w-10 h-10 text-[#FF1A1A] animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+            </svg>
+            <p class="text-sm font-semibold text-icc-dark">Memperbarui rekap nilai...</p>
+            <p class="text-xs text-icc-gray">Mengambil data terbaru dari Google Sheets</p>
+        </div>
+    </div>
     @if ($classes->isEmpty())
         <div class="text-center py-12 bg-gray-50 rounded-2xl">
             <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,12 +81,17 @@
                         @endif
                     </p>
                 </div>
-                <button wire:click="refresh"
-                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-gray-200 text-icc-dark hover:border-[#FF1A1A] hover:text-[#FF1A1A] transition-all">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <button wire:click="refresh" wire:loading.attr="disabled" wire:target="refresh"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-gray-200 text-icc-dark hover:border-[#FF1A1A] hover:text-[#FF1A1A] transition-all disabled:opacity-60">
+                    <svg class="w-3.5 h-3.5" wire:loading.remove wire:target="refresh" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                     </svg>
-                    Segarkan Sekarang
+                    <svg class="w-3.5 h-3.5 animate-spin" wire:loading wire:target="refresh" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                    </svg>
+                    <span wire:loading.remove wire:target="refresh">Segarkan Sekarang</span>
+                    <span wire:loading wire:target="refresh">Memuat...</span>
                 </button>
             </div>
 

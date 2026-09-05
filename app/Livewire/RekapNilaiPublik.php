@@ -34,6 +34,7 @@ class RekapNilaiPublik extends Component
     {
         return $this->event->classes
             ->filter(fn (EventClass $class): bool => filled($class->rekap_sheet_url))
+            ->sortBy(fn (EventClass $class): string => mb_strtolower($class->nama_kelas ?? ''))
             ->values();
     }
 
