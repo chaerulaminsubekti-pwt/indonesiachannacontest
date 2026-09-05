@@ -34,8 +34,8 @@
                     <div class="relative aspect-[3/4] overflow-hidden rounded-2xl">
                         <template x-for="(flyer, index) in @js($flyers->map(fn($f) => ['url' => Storage::url($f->file_path), 'caption' => $f->caption]))" :key="index">
                             <img :src="flyer.url" :alt="'Flyer ' + (index + 1)"
-                                x-show="active === index"
-                                class="w-full h-full object-cover object-center" loading="lazy">
+                                x-show="active === index" loading="lazy" decoding="async"
+                                class="w-full h-full object-cover object-center">
                         </template>
                     </div>
                     @if ($flyers->count() > 1)
@@ -186,8 +186,8 @@
             <div class="sponsor-track flex w-max items-stretch gap-3 py-1">
                 @foreach ($event->sponsors as $sponsor)
                     <div class="flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm w-28 h-16 flex items-center justify-center p-2">
-                        <img src="{{ Storage::url($sponsor->logo_path) }}" alt="Sponsor {{ $event->nama_event }}"
-                            class="max-w-full max-h-full object-contain" loading="lazy">
+                    <img src="{{ Storage::url($sponsor->logo_path) }}" alt="Sponsor {{ $event->nama_event }}"
+                        class="max-w-full max-h-full object-contain" loading="lazy" decoding="async">
                     </div>
                 @endforeach
                 @foreach ($event->sponsors as $sponsor)

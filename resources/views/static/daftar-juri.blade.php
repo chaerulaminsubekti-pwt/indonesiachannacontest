@@ -12,7 +12,7 @@
             @if ($data->tipe === 'pdf')
                 <iframe src="{{ asset('storage/' . $data->file_path) }}" class="w-full h-[80vh] rounded-xl border border-gray-200" frameborder="0"></iframe>
             @else
-                <img src="{{ asset('storage/' . $data->file_path) }}" alt="Daftar Juri ICC" class="w-full rounded-xl border border-gray-200">
+                <img src="{{ asset('storage/' . $data->file_path) }}" alt="Daftar Juri ICC" class="w-full rounded-xl border border-gray-200" loading="lazy" decoding="async">
             @endif
         </div>
     @else

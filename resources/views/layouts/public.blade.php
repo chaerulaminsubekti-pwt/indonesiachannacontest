@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0A0A0A">
 
     @php
         $siteName = $settings->nama_website ?? 'Indonesia Channa Contest';
@@ -116,7 +117,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
-            <img src="{{ Storage::url($settings->popup_gambar) }}" alt="Flyer" class="w-full h-auto">
+            <img src="{{ Storage::url($settings->popup_gambar) }}" alt="Flyer" class="w-full h-auto" loading="lazy" decoding="async">
         </div>
     </div>
     <script>

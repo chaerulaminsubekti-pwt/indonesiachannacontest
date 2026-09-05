@@ -48,7 +48,7 @@
                 @if ($article->gambar_sampul)
                     <div class="aspect-[16/9] overflow-hidden">
                         <img src="{{ Storage::url($article->gambar_sampul) }}" alt="{{ $article->judul }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" decoding="async">
                     </div>
                 @endif
                 <div class="p-5">

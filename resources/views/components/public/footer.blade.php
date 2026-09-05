@@ -5,7 +5,7 @@
             <div>
                 <a href="{{ url('/') }}" class="inline-block mb-4">
                     @if ($settings?->logo_header)
-                        <img src="{{ Storage::url($settings->logo_header) }}" alt="{{ $settings->nama_website ?? 'Logo ICC' }}" class="h-14 w-auto object-contain">
+                        <img src="{{ Storage::url($settings->logo_header) }}" alt="{{ $settings->nama_website ?? 'Logo ICC' }}" class="h-14 w-auto object-contain" loading="lazy" decoding="async">
                     @endif
                 </a>
                 <h3 class="text-white font-bold text-lg mb-3">{{ $settings->nama_website ?? 'ICC' }}</h3>

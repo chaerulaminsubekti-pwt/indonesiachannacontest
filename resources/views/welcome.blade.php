@@ -11,6 +11,7 @@
             <div class="swiper-slide relative">
                 @if ($slide->gambar)
                     <img src="{{ Storage::url($slide->gambar) }}" alt="{{ $slide->judul }}"
+                        @if ($loop->first) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
                         class="w-full h-full object-cover object-center">
                 @else
                     <div class="w-full h-full bg-gradient-to-r from-icc-primary to-icc-primary-dark"></div>
@@ -51,7 +52,7 @@
                 <div class="flex flex-col items-center text-center mb-6">
                     <div class="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-amber-400/30 mb-4 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
                         @if ($settings->foto_pembina)
-                            <img src="{{ Storage::url($settings->foto_pembina) }}" alt="{{ $settings->nama_pembina }}" class="w-full h-full object-cover">
+                            <img src="{{ Storage::url($settings->foto_pembina) }}" alt="{{ $settings->nama_pembina }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                         @else
                             <span class="text-4xl md:text-5xl text-white font-bold">{{ Str::upper(Str::substr($settings->nama_pembina, 0, 1)) }}</span>
                         @endif
@@ -59,7 +60,7 @@
                     <h3 class="text-xl md:text-2xl font-bold text-icc-dark">{{ $settings->nama_pembina }}</h3>
                     <p class="text-amber-600 font-medium text-sm md:text-base">{{ $settings->jabatan_pembina ?? ('Pembina ' . ($settings->nama_website ?? 'ICC')) }}</p>
                 </div>
-                <div class="text-icc-gray leading-relaxed prose prose-sm max-w-none">
+                <div class="text-icc-gray leading-relaxed article-body max-w-none">
                     {!! safe_html($settings->sambutan_pembina) !!}
                 </div>
             </div>
@@ -71,7 +72,7 @@
                 <div class="flex flex-col items-center text-center mb-6">
                     <div class="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-icc-gold/30 mb-4 bg-gradient-to-br from-icc-primary to-icc-primary-dark flex items-center justify-center">
                         @if ($settings->foto_ketua)
-                            <img src="{{ Storage::url($settings->foto_ketua) }}" alt="{{ $settings->nama_ketua }}" class="w-full h-full object-cover">
+                            <img src="{{ Storage::url($settings->foto_ketua) }}" alt="{{ $settings->nama_ketua }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                         @else
                             <span class="text-4xl md:text-5xl text-white font-bold">{{ Str::upper(Str::substr($settings->nama_ketua, 0, 1)) }}</span>
                         @endif
@@ -79,7 +80,7 @@
                     <h3 class="text-xl md:text-2xl font-bold text-icc-dark">{{ $settings->nama_ketua }}</h3>
                     <p class="text-icc-primary font-medium text-sm md:text-base">Ketua {{ $settings->nama_website ?? 'ICC' }}</p>
                 </div>
-                <div class="text-icc-gray leading-relaxed prose prose-sm max-w-none">
+                <div class="text-icc-gray leading-relaxed article-body max-w-none">
                     {!! safe_html($settings->sambutan_ketua) !!}
                 </div>
             </div>

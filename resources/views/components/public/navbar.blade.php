@@ -4,7 +4,7 @@
 
             <a href="{{ url('/') }}" class="h-full flex items-center">
                 @if ($settings?->logo_header)
-                    <img src="{{ Storage::url($settings->logo_header) }}" alt="{{ $settings->nama_website ?? 'ICC' }}" class="max-h-full w-auto max-w-[260px] object-contain">
+                    <img src="{{ Storage::url($settings->logo_header) }}" alt="{{ $settings->nama_website ?? 'ICC' }}" class="max-h-full w-auto max-w-[260px] object-contain" fetchpriority="high" decoding="async">
                 @else
                     <span class="text-xl font-bold text-icc-primary">{{ $settings->nama_website ?? 'ICC' }}</span>
                 @endif
