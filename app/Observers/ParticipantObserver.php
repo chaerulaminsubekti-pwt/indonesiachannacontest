@@ -27,6 +27,8 @@ class ParticipantObserver
             $participant->timestamps = false;
             $participant->no_urut = null;
             $participant->saveQuietly();
+            // Nomor yang ditinggalkan langsung diisi peserta di bawahnya.
+            Participant::renumberSequence($participant->event_id, $participant->event_class_id);
 
             return;
         }

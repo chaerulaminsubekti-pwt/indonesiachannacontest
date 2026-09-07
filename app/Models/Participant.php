@@ -48,6 +48,15 @@ class Participant extends Model
         'fishout' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        // Setiap hapus peserta, nomor di bawahnya naik mengisi kekosongan.
+        // Hanya kolom no_urut yang berubah; saveQuietly agar tidak memicu event berulang.
+        static::deleted(function (Participant $participant) {
+            self::renumberSequence($participant->event_id, $participant->event_class_id);
+        });
+    }
+
     public static function statuses(): array
     {
         return [
