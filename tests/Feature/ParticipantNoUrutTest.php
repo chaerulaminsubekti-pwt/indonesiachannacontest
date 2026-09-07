@@ -122,7 +122,7 @@ class ParticipantNoUrutTest extends TestCase
         $this->assertSame(6, $b->fresh()->no_urut);
     }
 
-    public function test_status_change_does_not_renumber_others(): void
+    public function test_status_change_to_rejected_fills_gap(): void
     {
         $event = $this->makeEvent();
         $class = $this->makeClass($event, 'Andrao');
@@ -134,7 +134,7 @@ class ParticipantNoUrutTest extends TestCase
 
         $this->assertSame(1, $a->fresh()->no_urut);
         $this->assertNull($b->fresh()->no_urut);
-        $this->assertSame(3, $c->fresh()->no_urut);
+        $this->assertSame(2, $c->fresh()->no_urut);
     }
 
     public function test_class_change_assigns_valid_number_when_taken(): void
