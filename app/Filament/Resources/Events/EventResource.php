@@ -101,6 +101,18 @@ class EventResource extends Resource
                             ->disk('public')
                             ->columnSpanFull(),
                     ]),
+                Section::make('Hasil Banding')
+                    ->description('Link spreadsheet respon ajuan banding (tab publik tampil otomatis)')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('banding_sheet_url')
+                            ->label('Link Google Sheets Banding')
+                            ->placeholder('https://docs.google.com/spreadsheets/d/...')
+                            ->url(),
+                        TextInput::make('banding_sheet_gid')
+                            ->label('Grid/Tab ID (opsional)')
+                            ->maxLength(20),
+                    ]),
                 Section::make('Deskripsi')
                     ->description('Informasi tambahan tentang event')
                     ->schema([

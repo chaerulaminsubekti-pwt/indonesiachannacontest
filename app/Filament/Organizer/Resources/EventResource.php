@@ -86,8 +86,8 @@ class EventResource extends Resource
                         TextInput::make('venue')->required()->maxLength(255),
                         TextInput::make('wilayah_kota')->maxLength(255),
                     ]),
-                Section::make('Data Peserta')
-                    ->description('Link Google Sheets untuk data peserta')
+                Section::make('Data Peserta & Banding')
+                    ->description('Link Google Sheets untuk data peserta dan hasil banding')
                     ->columns(1)
                     ->schema([
                         TextInput::make('google_sheet_url')
@@ -95,6 +95,16 @@ class EventResource extends Resource
                             ->placeholder('https://docs.google.com/spreadsheets/d/...')
                             ->url()
                             ->helperText('Tempel link Google Sheets yang berisi kolom: No, Nama, Nama Ikan. Sheet harus bisa diakses publik.'),
+                        TextInput::make('banding_sheet_url')
+                            ->label('Link Google Sheets (Hasil Banding)')
+                            ->placeholder('https://docs.google.com/spreadsheets/d/...')
+                            ->url()
+                            ->helperText('Sheet respon ajuan banding. Harus dibagikan "Anyone with the link" (Viewer) + izin download. Tab Hasil Banding tampil otomatis bila diisi.'),
+                        TextInput::make('banding_sheet_gid')
+                            ->label('Grid/Tab ID Sheet Banding (opsional)')
+                            ->placeholder('0')
+                            ->maxLength(20)
+                            ->helperText('ID tab bila data banding bukan di tab pertama. Lihat angka gid= di URL sheet.'),
                     ]),
                 Section::make('Deskripsi')
                     ->description('Informasi tambahan tentang event')

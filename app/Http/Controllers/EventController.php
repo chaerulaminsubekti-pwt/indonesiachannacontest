@@ -64,6 +64,8 @@ class EventController extends Controller
 
         $hasRekap = $classes->contains(fn (EventClass $class): bool => filled($class->rekap_sheet_url));
 
-        return view('event.show', compact('event', 'winners', 'galleries', 'classes', 'hasRekap'));
+        $hasBanding = filled($event->banding_sheet_url);
+
+        return view('event.show', compact('event', 'winners', 'galleries', 'classes', 'hasRekap', 'hasBanding'));
     }
 }

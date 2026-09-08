@@ -12,6 +12,7 @@ class Event extends Model
     protected $fillable = [
         'organizer_id', 'nama_event', 'slug', 'tanggal_mulai', 'tanggal_selesai',
         'venue', 'kategori', 'tema', 'wilayah_kota', 'flyer', 'deskripsi', 'status', 'google_sheet_url', 'no_wa_cp',
+        'banding_sheet_url', 'banding_sheet_gid',
     ];
 
     protected static function booted(): void
