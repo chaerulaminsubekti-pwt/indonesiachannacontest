@@ -60,16 +60,51 @@ class HasilBandingPublik extends Component
         $this->lastUpdated = now('Asia/Jakarta')->format('H:i:s');
 
         $parsed = $parser->parse($csv);
+        $rows = $parser->sortRows($parsed['rows'], $parsed['kelasIndex'], $parsed['timeIndex'], $this->sortDirection);
+
+        $grouped = [];
+        foreach ($rows as $row) {
+            $kelas = $parsed['kelasIndex'] !== null ? trim((string) ($row[$parsed['kelasIndex']] ?? '')) : '';
+            $grouped[$kelas !== '' ? $kelas : 'Tanpa Kelas'][] = $row;
+        }
 
         return [
             'headers' => $parsed['headers'],
-            'rows' => $parser->sortRows($parsed['rows'], $parsed['kelasIndex'], $parsed['timeIndex'], $this->sortDirection),
+            'rows' => $rows,
+            'grouped' => $grouped,
             'timeIndex' => $parsed['timeIndex'],
             'kelasIndex' => $parsed['kelasIndex'],
             'keputusanIndex' => $parsed['keputusanIndex'],
             'namaIndex' => $parsed['namaIndex'],
             'sortDirection' => $this->sortDirection,
         ];
+    }
+
+    /**
+     * Ubah URL video menjadi URL embed yang bisa diputar inline.
+     * Mendukung Google Drive, YouTube, dan file mp4 langsung.
+     */
+    public function videoEmbedUrl(string $url): ?array
+    {
+        $url = trim($url);
+
+        if ($url === '' || ! str_starts_with($url, 'http')) {
+            return null;
+        }
+
+        if (preg_match('#drive\.google\.com/(?:open\?id=|file/d/)([a-zA-Z0-9_-]+)#', $url, $m)) {
+            return ['type' => 'iframe', 'src' => 'https://drive.google.com/file/d/'.$m[1].'/preview'];
+        }
+
+        if (preg_match('#(?:youtube\.com/(?:watch\?v=|shorts/)|youtu\.be/)([a-zA-Z0-9_-]{6,})#', $url, $m)) {
+            return ['type' => 'iframe', 'src' => 'https://www.youtube.com/embed/'.$m[1]];
+        }
+
+        if (preg_match('#\.mp4(\?.*)?$#i', $url)) {
+            return ['type' => 'video', 'src' => $url];
+        }
+
+        return null;
     }
 
     #[Layout('layouts.public')]

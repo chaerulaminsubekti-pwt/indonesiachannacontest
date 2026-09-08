@@ -1,4 +1,5 @@
-<div class="space-y-6" wire:poll.60s>
+<div class="space-y-6" wire:poll.60s
+    x-data="{ openKelas: null, videoSrc: '', videoType: 'iframe', videoOpen: false }">
     @if ($appeals === null && ! $error)
         <div class="text-center py-12 bg-gray-50 rounded-2xl">
             <h3 class="text-lg font-medium text-icc-dark mb-1">Hasil banding belum tersedia</h3>
@@ -55,15 +56,24 @@
                 $emailHidden = collect($headers)->filter(fn ($h) => $parser->isEmailColumn($h))->keys()->all();
             @endphp
 
-            @forelse ($appeals['rows'] as $row)
+            @forelse ($appeals['grouped'] as $namaKelas => $groupRows)
+                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                    <button type="button" @click="openKelas === '{{ $loop->index }}' ? openKelas = null : openKelas = '{{ $loop->index }}'"
+                        class="w-full flex items-center justify-between gap-3 bg-gradient-to-r from-icc-primary/10 to-icc-primary-dark/10 px-5 py-3 text-left hover:from-icc-primary/15 transition">
+                        <span class="font-semibold text-icc-dark">{{ $namaKelas }}</span>
+                        <span class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-xs font-bold text-icc-primary bg-white border border-gray-200 rounded-full px-2.5 py-0.5 tabular-nums">{{ count($groupRows) }} banding</span>
+                            <svg class="w-5 h-5 text-icc-gray transition-transform" :class="openKelas === '{{ $loop->index }}' ? 'rotate-180' : ''"
+                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <div x-show="openKelas === '{{ $loop->index }}'" x-transition x-cloak class="p-4 space-y-4 bg-gray-50/50">
+                        @foreach ($groupRows as $row)
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
                     <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div>
-                            @if ($appeals['kelasIndex'] !== null && filled($row[$appeals['kelasIndex']] ?? ''))
-                                <span class="inline-block px-2.5 py-1 text-[11px] font-bold text-[#FF1A1A] bg-[#FF1A1A]/10 rounded-full mb-2">
-                                    {{ $row[$appeals['kelasIndex']] }}
-                                </span>
-                            @endif
                             <h3 class="font-bold text-icc-dark">
                                 {{ ($appeals['namaIndex'] !== null ? ($row[$appeals['namaIndex']] ?? '') : '') ?: 'Ajuan Banding' }}
                             </h3>
@@ -93,7 +103,17 @@
                             <div class="flex flex-col sm:flex-row sm:gap-2 py-1 border-b border-gray-50">
                                 <dt class="text-icc-gray text-xs sm:w-40 flex-shrink-0 pt-0.5">{{ $header }}</dt>
                                 <dd class="text-icc-dark flex-1">
-                                    @if (str_starts_with($value, 'http'))
+                                    @php $embed = $this->videoEmbedUrl($value); @endphp
+                                    @if ($embed)
+                                        <button type="button"
+                                            @click="videoSrc = '{{ $embed['src'] }}'; videoType = '{{ $embed['type'] }}'; videoOpen = true"
+                                            class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-white bg-[#FF1A1A] rounded-lg hover:bg-[#CC1515] transition">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                            Putar Video
+                                        </button>
+                                    @elseif (str_starts_with($value, 'http'))
                                         <a href="{{ $value }}" target="_blank" rel="noopener" class="text-[#FF1A1A] hover:underline break-all">Lihat Lampiran</a>
                                     @else
                                         {{ $value }}
@@ -103,6 +123,9 @@
                         @endforeach
                     </dl>
                 </div>
+                        @endforeach
+                    </div>
+                </div>
             @empty
                 <div class="text-center py-12 bg-gray-50 rounded-2xl">
                     <p class="text-icc-gray">Belum ada ajuan banding.</p>
@@ -110,4 +133,25 @@
             @endforelse
         @endif
     @endif
+
+    {{-- Modal popup video --}}
+    <div x-show="videoOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+        @click.self="videoOpen = false; videoSrc = ''" @keydown.escape.window="videoOpen = false; videoSrc = ''">
+        <div class="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl">
+            <button type="button" @click="videoOpen = false; videoSrc = ''"
+                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="aspect-video w-full">
+                <template x-if="videoType === 'video'">
+                    <video :src="videoSrc" controls playsinline class="w-full h-full"></video>
+                </template>
+                <template x-if="videoType !== 'video'">
+                    <iframe :src="videoSrc" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+                </template>
+            </div>
+        </div>
+    </div>
 </div>
