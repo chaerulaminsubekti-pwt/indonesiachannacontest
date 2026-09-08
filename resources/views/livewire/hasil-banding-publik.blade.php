@@ -144,12 +144,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
-            <div class="aspect-video w-full">
+            <div class="w-full" style="aspect-ratio:16/9;max-height:80vh;">
                 <template x-if="videoType === 'video'">
-                    <video :src="videoSrc" controls playsinline class="w-full h-full"></video>
+                    <video :src="videoSrc" controls playsinline class="w-full h-full" style="max-height:80vh;background:#000;"></video>
                 </template>
                 <template x-if="videoType !== 'video'">
-                    <iframe :src="videoSrc" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+                    <iframe :src="videoSrc" class="w-full h-full" style="min-height:320px;max-height:80vh;" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
                 </template>
             </div>
         </div>
