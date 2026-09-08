@@ -137,13 +137,21 @@
     {{-- Modal popup video --}}
     <div x-show="videoOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
         @click.self="videoOpen = false; videoSrc = ''" @keydown.escape.window="videoOpen = false; videoSrc = ''">
-        <div class="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl">
-            <button type="button" @click="videoOpen = false; videoSrc = ''"
-                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
+        <div class="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl" x-ref="vidwrap">
+            <div class="absolute top-3 right-3 z-10 flex gap-2">
+                <button type="button" @click="document.fullscreenElement ? document.exitFullscreen() : ($refs.vidwrap.requestFullscreen ? $refs.vidwrap.requestFullscreen() : ($refs.vidwrap.webkitRequestFullscreen ? $refs.vidwrap.webkitRequestFullscreen() : null))"
+                    class="w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition" title="Layar penuh">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>
+                    </svg>
+                </button>
+                <button type="button" @click="videoOpen = false; videoSrc = ''; if (document.fullscreenElement) document.exitFullscreen()"
+                    class="w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition" title="Tutup">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
             <div class="w-full" style="aspect-ratio:16/9;max-height:80vh;">
                 <template x-if="videoType === 'video'">
                     <video :src="videoSrc" controls playsinline class="w-full h-full" style="max-height:80vh;background:#000;"></video>
